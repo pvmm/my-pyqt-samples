@@ -11,7 +11,10 @@ ApplicationWindow {
 
     SwipeView {
         id: swipeView
-		objectName: "swipeView"
+        y: 93
+        height: 307
+        anchors.topMargin: 94
+        objectName: "swipeView"
         anchors.fill: parent
         currentIndex: tabBar.currentIndex
 
@@ -23,21 +26,53 @@ ApplicationWindow {
 
         Page3Form {
         }
+
+        Page4Form {
+        }
+
+        Page5Form {
+        }
+
+        Page6Form {
+        }
+    }
+
+    Rectangle {
+        id: rectangle
+        x: 0
+        y: 0
+        width: 640
+        height: 93
+        color: "#dfdfdf"
+
+        Image {
+            id: image
+            x: 145
+            y: 0
+            width: 350
+            height: 93
+            source: "codeplan.png"
+        }
     }
 
     footer: TabBar {
         id: tabBar
-		objectName: "tabBar"
+        objectName: "tabBar"
         currentIndex: swipeView.currentIndex
 
         TabButton {
-            text: qsTr("Page 1")
+            text: qsTr("Voltar")
+            onClicked: {
+                parent.currentIndex = parent.currentIndex - 1;
+                console.log(parent.currentIndex);
+            }
         }
         TabButton {
-            text: qsTr("Page 2")
-        }
-        TabButton {
-            text: qsTr("Page 3")
+            text: qsTr("Avançar")
+            onClicked: {
+                parent.currentIndex = parent.currentIndex + 1;
+                console.log(parent.currentIndex);
+            }
         }
     }
 }

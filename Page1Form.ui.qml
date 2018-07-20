@@ -16,15 +16,15 @@ Page {
         text: qsTr("You are on Page 1.")
         anchors.centerIn: parent
     }
-	
-	Button {
-		id: button
-		x: 250
-		y: 220
-		text: qsTr("Click me")
 
-		onClicked: {
-			console.log("Clicked!");
-		}
-	}
+    Button {
+        id: button
+        x: 250
+        y: 220
+        text: qsTr("Click me")
+
+        //		onClicked: {
+        //			console.log("Clicked!");
+        //		}
+    }
 }
