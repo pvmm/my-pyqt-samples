@@ -2,6 +2,8 @@ import QtQuick 2.9
 import QtQuick.Controls 2.2
 
 ApplicationWindow {
+    id: appWindow
+    objectName: "appWindow"
     visible: true
     width: 640
     height: 480
@@ -9,6 +11,7 @@ ApplicationWindow {
 
     SwipeView {
         id: swipeView
+		objectName: "swipeView"
         anchors.fill: parent
         currentIndex: tabBar.currentIndex
 
@@ -24,6 +27,7 @@ ApplicationWindow {
 
     footer: TabBar {
         id: tabBar
+		objectName: "tabBar"
         currentIndex: swipeView.currentIndex
 
         TabButton {
