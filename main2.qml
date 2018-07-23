@@ -50,6 +50,7 @@ ApplicationWindow {
     footer: Row {
         id: row
         objectName: "row"
+        spacing: 5
 
         Button {
             id: previous
