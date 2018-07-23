@@ -9,14 +9,32 @@ ApplicationWindow {
     height: 480
     title: qsTr("Tabs")
 
+    Rectangle {
+        id: rectangle
+        x: 0
+        y: 0
+        width: 640
+        height: 93
+        color: "#dfdfdf"
+
+        Image {
+            id: image
+            x: 145
+            y: 0
+            width: 350
+            height: 93
+            source: "codeplan.png"
+        }
+    }
+
     SwipeView {
-        id: swipeView
+        id: view
         y: 93
         height: 307
         anchors.topMargin: 94
-        objectName: "swipeView"
+        objectName: "view"
         anchors.fill: parent
-        currentIndex: tabBar.currentIndex
+        //currentIndex: tabBar.currentIndex
 
         Page1Form {
         }
@@ -37,41 +55,28 @@ ApplicationWindow {
         }
     }
 
-    Rectangle {
-        id: rectangle
-        x: 0
-        y: 0
-        width: 640
-        height: 93
-        color: "#dfdfdf"
+    footer: Row {
+        id: row
+        objectName: "column"
 
-        Image {
-            id: image
-            x: 145
-            y: 0
-            width: 350
-            height: 93
-            source: "codeplan.png"
-        }
-    }
-
-    footer: TabBar {
-        id: tabBar
-        objectName: "tabBar"
-        currentIndex: swipeView.currentIndex
-
-        TabButton {
+        Button {
+            id: previous
             text: qsTr("Voltar")
+            width: parent.width / 2
             onClicked: {
-                parent.currentIndex = parent.currentIndex - 1;
-                console.log(parent.currentIndex);
+                if (view.currentIndex > 0) {
+                    view.currentIndex -= 1;
+                }
             }
         }
-        TabButton {
+        Button {
+            id: next 
             text: qsTr("Avançar")
+            width: parent.width / 2
             onClicked: {
-                parent.currentIndex = parent.currentIndex + 1;
-                console.log(parent.currentIndex);
+                if (view.currentIndex < view.count - 1) {
+                    view.currentIndex += 1;
+                }
             }
         }
     }
