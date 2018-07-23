@@ -1,5 +1,6 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
+import QtQuick.Controls.Universal 2.2
 
 ApplicationWindow {
     id: appWindow
@@ -8,23 +9,15 @@ ApplicationWindow {
     width: 640
     height: 480
     title: qsTr("Tabs")
+    Universal.background: "#dfdfdf"
 
-    Rectangle {
-        id: rectangle
-        x: 0
+    Image {
+        id: image
+        x: 145
         y: 0
-        width: 640
+        width: 350
         height: 93
-        color: "#dfdfdf"
-
-        Image {
-            id: image
-            x: 145
-            y: 0
-            width: 350
-            height: 93
-            source: "codeplan.png"
-        }
+        source: "codeplan.png"
     }
 
     SwipeView {
@@ -34,7 +27,6 @@ ApplicationWindow {
         anchors.topMargin: 94
         objectName: "view"
         anchors.fill: parent
-        //currentIndex: tabBar.currentIndex
 
         Page1Form {
         }

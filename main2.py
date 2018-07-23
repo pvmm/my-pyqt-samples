@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import sys
+import sys, os
 
 from PyQt5 import QtQuick
 from PyQt5.QtGui import QGuiApplication
@@ -9,6 +9,8 @@ from logger import StdoutLogger as Logger
 Logger.debug("OK")
 
 if __name__ == "__main__":
+    os.environ['QT_QUICK_CONTROLS_STYLE']='Universal'
+
     # Create an instance of the application
     app = QGuiApplication(sys.argv)
 
