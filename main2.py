@@ -1,12 +1,26 @@
 # -*- coding: utf-8 -*-
-import sys, os
+from logger import StdoutLogger as Logger
 
+# Carregar ambiente virtual
+import sys, os, platform
+
+if platform.system() == 'Windows':
+    virtualenv_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'env/Scripts/activate_this.py')
+else:
+    virtualenv_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'env/bin/activate_this.py')
+
+if os.path.exists(virtualenv_file):
+    with open(virtualenv_file) as file_:
+        exec(file_.read(), dict(__file__ = virtualenv_file))
+        Logger.debug("Virtualenv ativado.")
+
+
+# Carrega PyQt5
 from PyQt5 import QtQuick
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtQml import QQmlApplicationEngine
-from logger import StdoutLogger as Logger
+Logger.debug("Bibliotecas do PyQt5 carregadas.")
 
-Logger.debug("OK")
 
 if __name__ == "__main__":
     os.environ['QT_QUICK_CONTROLS_STYLE']='Universal'
