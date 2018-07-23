@@ -22,20 +22,10 @@ Page {
             color: "#FFFFFF"
             radius: 2
 
-            /*Component {
-                id: leftContactDelegate
-                Item {
-                    width: 180
-                    height: 20
-                    Column {
-                        Text {
-                            text: name
-                        }
-                    }
-                }
-            }*/
             ListView {
+                id: listview1
                 anchors.fill: parent
+                keyNavigationEnabled: true
 
                 model: ListModel {
                     ListElement {
@@ -49,11 +39,21 @@ Page {
                     }
                 }
 
-                delegate: leftContactDelegate
+                delegate: Text {
+                    text: name
+                    width: parent.width
+                    height: 30
+                    verticalAlignment: Text.AlignVCenter
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: listview1.currentIndex = index
+                    }
+                }
                 highlight: Rectangle {
                     color: "lightsteelblue"
                     radius: 2
                 }
+                highlightFollowsCurrentItem: true
                 focus: true
             }
         }
@@ -62,15 +62,15 @@ Page {
             spacing: 5
 
             Button {
-                text: qsTr('+')
+                text: qsTr('→')
                 id: addButton
-                //onClicked: console.log('(+) clicked')
+                onClicked: console.log('(→) clicked')
             }
 
             Button {
-                text: qsTr('-')
+                text: qsTr('←')
                 id: removeButton
-                //onClicked: console.log('(-) clicked')
+                onClicked: console.log('(←) clicked')
             }
         }
 
@@ -80,30 +80,29 @@ Page {
             color: "#FFFFFF"
             radius: 2
 
-            /*
-            Component {
-                id: rightContactDelegate
-                Item {
-                    width: 180
-                    height: 20
-                    Column {
-                        Text {
-                            text: name
-                        }
-                    }
-                }
-            }*/
             ListView {
+                id: listview2
                 anchors.fill: parent
+                keyNavigationEnabled: true
 
                 model: ListModel {
                 }
 
-                delegate: rightContactDelegate
+                delegate: Text {
+                    text: name
+                    width: parent.width
+                    height: 30
+                    verticalAlignment: Text.AlignVCenter
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: listview2.currentIndex = index
+                    }
+                }
                 highlight: Rectangle {
                     color: "lightsteelblue"
                     radius: 2
                 }
+                highlightFollowsCurrentItem: true
                 focus: true
             }
         }

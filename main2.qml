@@ -10,6 +10,7 @@ ApplicationWindow {
     height: 480
     title: qsTr("Geocode")
     Universal.background: "#dfdfdf"
+    flags: Qt.Window | Qt.WindowTitleHint | Qt.WindowCloseButtonHint
 
     Image {
         id: image
