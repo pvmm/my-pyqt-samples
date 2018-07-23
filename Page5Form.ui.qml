@@ -7,7 +7,7 @@ Page {
     height: 400
 
     header: Label {
-        text: qsTr("Page 5")
+        text: qsTr("Serviço de Geocodificação:")
         font.pixelSize: Qt.application.font.pixelSize * 2
         padding: 10
     }

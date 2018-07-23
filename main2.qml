@@ -8,7 +8,7 @@ ApplicationWindow {
     visible: true
     width: 640
     height: 480
-    title: qsTr("Tabs")
+    title: qsTr("Geocode")
     Universal.background: "#dfdfdf"
 
     Image {
@@ -55,6 +55,9 @@ ApplicationWindow {
             id: previous
             text: qsTr("Voltar")
             width: parent.width / 2
+//            background: "#2A2A35";
+
+
             enabled: false
 
             onClicked: {
@@ -66,7 +69,7 @@ ApplicationWindow {
             }
         }
         Button {
-            id: next 
+            id: next
             text: qsTr("Avançar")
             width: parent.width / 2
             onClicked: {

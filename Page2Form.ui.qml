@@ -22,7 +22,7 @@ Page {
             color: "#FFFFFF"
             radius: 2
 
-            Component {
+            /*Component {
                 id: leftContactDelegate
                 Item {
                     width: 180
@@ -33,8 +33,7 @@ Page {
                         }
                     }
                 }
-            }
-
+            }*/
             ListView {
                 anchors.fill: parent
 
@@ -65,13 +64,13 @@ Page {
             Button {
                 text: qsTr('+')
                 id: addButton
-                onClicked: console.log('(+) clicked')
+                //onClicked: console.log('(+) clicked')
             }
 
             Button {
                 text: qsTr('-')
                 id: removeButton
-                onClicked: console.log('(-) clicked')
+                //onClicked: console.log('(-) clicked')
             }
         }
 
@@ -81,6 +80,7 @@ Page {
             color: "#FFFFFF"
             radius: 2
 
+            /*
             Component {
                 id: rightContactDelegate
                 Item {
@@ -92,8 +92,7 @@ Page {
                         }
                     }
                 }
-            }
-
+            }*/
             ListView {
                 anchors.fill: parent
 

@@ -7,7 +7,7 @@ Page {
     height: 400
 
     header: Label {
-        text: qsTr("Page 4")
+        text: qsTr("Quantidade de registros por arquivo:")
         font.pixelSize: Qt.application.font.pixelSize * 2
         padding: 10
     }

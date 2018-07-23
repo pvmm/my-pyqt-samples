@@ -7,7 +7,7 @@ Page {
     height: 400
 
     header: Label {
-        text: qsTr("Page 6")
+        text: qsTr("Arquivos gerados:")
         font.pixelSize: Qt.application.font.pixelSize * 2
         padding: 10
     }
