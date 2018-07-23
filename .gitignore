@@ -105,3 +105,6 @@ venv.bak/
 
 # PyQt temporary files
 *.qmlc
+
+# Vim temporary files
+.*.swp

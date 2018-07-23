@@ -57,15 +57,19 @@ ApplicationWindow {
 
     footer: Row {
         id: row
-        objectName: "column"
+        objectName: "row"
 
         Button {
             id: previous
             text: qsTr("Voltar")
             width: parent.width / 2
+            enabled: false
+
             onClicked: {
-                if (view.currentIndex > 0) {
-                    view.currentIndex -= 1;
+                next.enabled = true;
+                view.currentIndex = Math.max(view.currentIndex - 1, 0);
+                if (view.currentIndex === 0) {
+                    enabled = false;
                 }
             }
         }
@@ -74,8 +78,17 @@ ApplicationWindow {
             text: qsTr("Avançar")
             width: parent.width / 2
             onClicked: {
-                if (view.currentIndex < view.count - 1) {
-                    view.currentIndex += 1;
+                previous.enabled = true;
+                view.currentIndex = view.currentIndex + 1;
+
+                // Ultima tela antes de confirmar operação.
+                if (view.currentIndex === view.count - 2) {
+                    text = qsTr("Concluir");
+                }
+
+                // Conclui operação e não permite mais voltar.
+                if (view.currentIndex === view.count - 1) {
+                    row.enabled = false;
                 }
             }
         }
