@@ -12,8 +12,12 @@ Page {
         padding: 10
     }
 
-    Label {
-        text: qsTr("You are on Page 5.")
-        anchors.centerIn: parent
+    TextField {
+        id: textField
+        x: 30
+        y: 66
+        width: parent.width * .9
+        height: 40
+        text: qsTr("http://geocodeapi.codeplan.df.gov.br/")
     }
 }
