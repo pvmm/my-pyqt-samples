@@ -57,14 +57,16 @@ ApplicationWindow {
             id: previous
             text: qsTr("Voltar")
             width: parent.width / 2
-//            background: "#2A2A35";
-
-
             enabled: false
 
             onClicked: {
                 next.enabled = true;
                 view.currentIndex = Math.max(view.currentIndex - 1, 0);
+
+                if (typeof view.currentItem.onChange === "function") {
+                    view.currentItem.onDisplay()
+                }
+
                 if (view.currentIndex === 0) {
                     enabled = false;
                 }
@@ -74,9 +76,14 @@ ApplicationWindow {
             id: next
             text: qsTr("Avançar")
             width: parent.width / 2
+
             onClicked: {
                 previous.enabled = true;
                 view.currentIndex = view.currentIndex + 1;
+
+                if (typeof view.currentItem.onChange === "function") {
+                    view.currentItem.onDisplay()
+                }
 
                 // Ultima tela antes de confirmar operação.
                 if (view.currentIndex === view.count - 2) {

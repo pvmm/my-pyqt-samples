@@ -4,8 +4,8 @@ from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty
 
 class Singleton(QObject):
     __instance = None
-    url = ""
-    colunas = []
+    _url = ""
+    _colunas = []
 
     def __init__(self, parent = None):
         if self.__class__.__instance != None:
@@ -25,22 +25,27 @@ class Singleton(QObject):
 
     @pyqtProperty('QString')
     def url(self):
-        return self.url
+        return self._url
+
+
+    @pyqtProperty(int)
+    def colunas(self):
+        return len(self._colunas)
 
 
     @pyqtSlot(str)
     def setUrl(self, url):
-        self.url = url
+        self._url = url
 
 
     @pyqtSlot(str, name = 'adicionaColuna')
     def adiciona_coluna(self, coluna):
         print("adiciona '%s'" % coluna)
-        self.colunas.append(coluna)
+        self._colunas.append(coluna)
 
 
     @pyqtSlot(str, name = 'removeColuna')
     def remove_coluna(self, coluna):
         print("removendo '%s'" % coluna)
-        self.colunas.remove(coluna)
+        self._colunas.remove(coluna)
 
