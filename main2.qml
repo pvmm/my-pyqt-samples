@@ -63,7 +63,7 @@ ApplicationWindow {
                 next.enabled = true;
                 view.currentIndex = Math.max(view.currentIndex - 1, 0);
 
-                if (typeof view.currentItem.onChange === "function") {
+                if (typeof view.currentItem.onDisplay === "function") {
                     view.currentItem.onDisplay()
                 }
 
@@ -81,7 +81,7 @@ ApplicationWindow {
                 previous.enabled = true;
                 view.currentIndex = view.currentIndex + 1;
 
-                if (typeof view.currentItem.onChange === "function") {
+                if (typeof view.currentItem.onDisplay === "function") {
                     view.currentItem.onDisplay()
                 }
 

@@ -8,7 +8,15 @@ Page {
     height: 400
 
     function onDisplay() {
-        console.log("onDisplay() called.")
+        checaBotaoAvancar()
+    }
+
+    function checaBotaoAvancar() {
+        if (PySingleton.colunas === 0) {
+            next.enabled = false
+        } else {
+            next.enabled = true
+        }
     }
 
     function moveItem(listview1, listview2) {
@@ -26,6 +34,7 @@ Page {
                             "Selecione mais " + (4 - PySingleton.colunas) + " colunas no máximo:")
             }
         }
+        checaBotaoAvancar()
     }
 
     function removeColuna() {
@@ -36,6 +45,7 @@ Page {
             mensagem.text = qsTr(
                         "Selecione mais " + (4 - PySingleton.colunas) + " colunas no máximo:")
         }
+        checaBotaoAvancar()
     }
 
     Column {
