@@ -16,9 +16,10 @@ if os.path.exists(virtualenv_file):
 
 
 # Carrega PyQt5
+from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty
 from PyQt5 import QtQuick
 from PyQt5.QtGui import QGuiApplication
-from PyQt5.QtQml import QQmlApplicationEngine
+from PyQt5.QtQml import QQmlApplicationEngine, qmlRegisterSingletonType
 Logger.debug("Bibliotecas do PyQt5 carregadas.")
 
 
@@ -28,11 +29,16 @@ if __name__ == "__main__":
     # Create an instance of the application
     app = QGuiApplication(sys.argv)
 
+    # Register singleton python object
+    from singleton import Singleton
+    qmlRegisterSingletonType(Singleton, "PySingletonModule", 1, 0, "PySingleton", Singleton.getInstance)
+
     # Create QML engine
     engine = QQmlApplicationEngine()
 
     # Load the qml file into the engine
     engine.load("main2.qml")
+
     win = engine.rootObjects().pop()
     Logger.debug("win = %s: %i, %s, %s." % (str(win), win.width(), win.title(), win.objectName()))
     swipeView = win.findChild(QtQuick.QQuickItem, "view")
