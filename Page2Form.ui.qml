@@ -47,6 +47,11 @@ Page {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: listview1.currentIndex = index
+                        onDoubleClicked: {
+                            listview2.model.append(listview1.model.get(
+                                                       listview1.currentIndex))
+                            listview1.model.remove(listview1.currentIndex)
+                        }
                     }
                 }
                 highlight: Rectangle {
@@ -64,13 +69,23 @@ Page {
             Button {
                 text: qsTr('→')
                 id: addButton
-                onClicked: console.log('(→) clicked')
+                onClicked: {
+                    console.log('(→) clicked')
+                    listview2.model.append(listview1.model.get(
+                                               listview1.currentIndex))
+                    listview1.model.remove(listview1.currentIndex)
+                }
             }
 
             Button {
                 text: qsTr('←')
                 id: removeButton
-                onClicked: console.log('(←) clicked')
+                onClicked: {
+                    console.log('(←) clicked')
+                    listview1.model.append(listview2.model.get(
+                                               listview2.currentIndex))
+                    listview2.model.remove(listview2.currentIndex)
+                }
             }
         }
 
@@ -96,6 +111,11 @@ Page {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: listview2.currentIndex = index
+                        onDoubleClicked: {
+                            listview1.model.append(listview2.model.get(
+                                                       listview2.currentIndex))
+                            listview2.model.remove(listview2.currentIndex)
+                        }
                     }
                 }
                 highlight: Rectangle {
@@ -103,8 +123,13 @@ Page {
                     radius: 2
                 }
                 highlightFollowsCurrentItem: true
-                focus: true
+                //focus: true
             }
         }
     }
 }
+
+/*##^## Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+ ##^##*/
