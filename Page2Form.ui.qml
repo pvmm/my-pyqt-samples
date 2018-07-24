@@ -72,19 +72,13 @@ Page {
             Button {
                 text: qsTr('→')
                 id: addButton
-                onClicked: {
-                    console.log('(→) clicked')
-                    onDoubleClicked: moveItem(listview1, listview2)
-                }
+                onClicked: moveItem(listview1, listview2)
             }
 
             Button {
                 text: qsTr('←')
                 id: removeButton
-                onClicked: {
-                    console.log('(←) clicked')
-                    onDoubleClicked: moveItem(listview2, listview1)
-                }
+                onClicked: moveItem(listview2, listview1)
             }
         }
 
