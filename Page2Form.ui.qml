@@ -30,10 +30,12 @@ Page {
                 PySingleton.adicionaColuna(listview1.model.get(
                                                listview1.currentIndex).name)
                 moveItem(listview1, listview2)
-                mensagem.text = qsTr(
-                            "Selecione mais " + (4 - PySingleton.colunas) + " colunas no máximo:")
             }
         }
+        if (PySingleton.colunas === 4) {
+            addButton.enabled = false
+        }
+        removeButton.enabled = true
         checaBotaoAvancar()
     }
 
@@ -42,19 +44,22 @@ Page {
             PySingleton.removeColuna(listview2.model.get(
                                          listview2.currentIndex).name)
             moveItem(listview2, listview1)
-            mensagem.text = qsTr(
-                        "Selecione mais " + (4 - PySingleton.colunas) + " colunas no máximo:")
+            addButton.enabled = true
+        }
+        if (PySingleton.colunas === 0) {
+            removeButton.enabled = false
         }
         checaBotaoAvancar()
     }
 
+    header: Text {
+        text: qsTr("Selecione no máximo 4 colunas:")
+        font.pixelSize: Qt.application.font.pixelSize * 2
+        padding: 10
+    }
+
     Column {
         anchors.centerIn: parent
-
-        Text {
-            id: mensagem
-            text: qsTr("Selecione no máximo 4 colunas:")
-        }
 
         Row {
             spacing: 5
@@ -120,6 +125,7 @@ Page {
                 Button {
                     text: qsTr('←')
                     id: removeButton
+                    enabled: false
                     onClicked: removeColuna()
                 }
             }
