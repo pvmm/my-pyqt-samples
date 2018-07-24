@@ -8,6 +8,11 @@ class Singleton(QObject):
     colunas = []
 
     def __init__(self, parent = None):
+        if self.__class__.__instance != None:
+            raise Exception("classe é singleton")
+        else:
+            self.__class__.__instance = self
+
         super().__init__(parent)
 
 
