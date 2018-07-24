@@ -4,12 +4,11 @@ from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty
 
 class Singleton(QObject):
     __instance = None
-
+    url = ""
+    colunas = []
 
     def __init__(self, parent = None):
         super().__init__(parent)
-        self.url = "http://geocodeapi.codeplan.df.gov.br"
-        self.colunas = []
 
 
     @classmethod
@@ -29,12 +28,14 @@ class Singleton(QObject):
         self.url = url
 
 
-    @pyqtSlot(str)
-    def adicionar_coluna(coluna):
+    @pyqtSlot(str, name = 'adicionaColuna')
+    def adiciona_coluna(self, coluna):
+        print("adiciona '%s'" % coluna)
         self.colunas.append(coluna)
 
 
-    @pyqtSlot(str)
-    def remover_coluna(coluna):
+    @pyqtSlot(str, name = 'removeColuna')
+    def remove_coluna(self, coluna):
+        print("removendo '%s'" % coluna)
         self.colunas.remove(coluna)
 

@@ -1,7 +1,6 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Controls.Universal 2.2
-import PySingletonModule 1.0
 
 ApplicationWindow {
     id: appWindow
@@ -12,11 +11,6 @@ ApplicationWindow {
     title: qsTr("Geocode")
     Universal.background: "#dfdfdf"
     flags: Qt.Window | Qt.WindowTitleHint | Qt.WindowCloseButtonHint
-
-    Component.onCompleted: {
-        PySingleton.xpto(1, 2, 3);
-        console.log(PySingleton.x);
-    }
 
     Image {
         id: image
