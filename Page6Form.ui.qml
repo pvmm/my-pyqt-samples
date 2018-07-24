@@ -6,6 +6,12 @@ Page {
     width: 600
     height: 400
 
+    function onDisplay() {
+        // Conclui operação e não permite mais voltar.
+        previous.enabled = false
+        next.text = qsTr("Fechar")
+    }
+
     header: Label {
         text: qsTr("Arquivos gerados:")
         font.pixelSize: Qt.application.font.pixelSize * 2

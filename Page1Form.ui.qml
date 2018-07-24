@@ -7,6 +7,10 @@ Page {
     width: 600
     height: 400
 
+    function onDisplay() {
+        previous.enabled = false
+    }
+
     header: Label {
         text: qsTr("Selecione um arquivo .csv:")
         font.pixelSize: Qt.application.font.pixelSize * 2

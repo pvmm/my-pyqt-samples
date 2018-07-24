@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty
+from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal, pyqtProperty
 
 
 class Singleton(QObject):
+    url_signal = pyqtSignal()
     __instance = None
-    _url = ""
+    _url = 'http://geocodeapi.codeplan.df.gov.br'
     _colunas = []
 
     def __init__(self, parent = None):
@@ -23,7 +24,7 @@ class Singleton(QObject):
         return cls.__instance
 
 
-    @pyqtProperty('QString')
+    @pyqtProperty('QString', notify=url_signal)
     def url(self):
         return self._url
 
@@ -38,13 +39,13 @@ class Singleton(QObject):
         self._url = url
 
 
-    @pyqtSlot(str, name = 'adicionaColuna')
+    @pyqtSlot(str, name='adicionaColuna')
     def adiciona_coluna(self, coluna):
         print("adiciona '%s'" % coluna)
         self._colunas.append(coluna)
 
 
-    @pyqtSlot(str, name = 'removeColuna')
+    @pyqtSlot(str, name='removeColuna')
     def remove_coluna(self, coluna):
         print("removendo '%s'" % coluna)
         self._colunas.remove(coluna)

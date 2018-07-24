@@ -1,10 +1,16 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
+import PySingletonModule 1.0
 
 Page {
     id: page5
     width: 600
     height: 400
+
+    function onDisplay() {
+        // Ultima tela antes de confirmar operação.
+        next.text = qsTr("Concluir")
+    }
 
     header: Label {
         text: qsTr("Serviço de Geocodificação:")
@@ -18,6 +24,6 @@ Page {
         y: 66
         width: parent.width * .9
         height: 40
-        text: qsTr("http://geocodeapi.codeplan.df.gov.br/")
+        text: PySingleton.url
     }
 }

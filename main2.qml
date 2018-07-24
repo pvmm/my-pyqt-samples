@@ -66,10 +66,6 @@ ApplicationWindow {
                 if (typeof view.currentItem.onDisplay === "function") {
                     view.currentItem.onDisplay()
                 }
-
-                if (view.currentIndex === 0) {
-                    enabled = false;
-                }
             }
         }
         Button {
@@ -81,18 +77,10 @@ ApplicationWindow {
                 previous.enabled = true;
                 view.currentIndex = view.currentIndex + 1;
 
-                if (typeof view.currentItem.onDisplay === "function") {
+                if (view.currentIndex == view.count) {
+                    Qt.exit(0)
+                } else if (typeof view.currentItem.onDisplay === "function") {
                     view.currentItem.onDisplay()
-                }
-
-                // Ultima tela antes de confirmar operação.
-                if (view.currentIndex === view.count - 2) {
-                    text = qsTr("Concluir");
-                }
-
-                // Conclui operação e não permite mais voltar.
-                if (view.currentIndex === view.count - 1) {
-                    row.enabled = false;
                 }
             }
         }
