@@ -28,6 +28,7 @@ ApplicationWindow {
         anchors.topMargin: 94
         objectName: "view"
         anchors.fill: parent
+        interactive: false
 
         Page1Form {
         }
