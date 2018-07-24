@@ -6,6 +6,13 @@ Page {
     width: 600
     height: 400
 
+    function moveItem(listview1, listview2) {
+        if (listview1.model.get(listview1.currentIndex)) {
+            listview2.model.append(listview1.model.get(listview1.currentIndex))
+            listview1.model.remove(listview1.currentIndex)
+        }
+    }
+
     header: Label {
         text: qsTr("Selecione no máximo 4 colunas:")
         font.pixelSize: Qt.application.font.pixelSize * 2
@@ -47,11 +54,7 @@ Page {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: listview1.currentIndex = index
-                        onDoubleClicked: {
-                            listview2.model.append(listview1.model.get(
-                                                       listview1.currentIndex))
-                            listview1.model.remove(listview1.currentIndex)
-                        }
+                        onDoubleClicked: moveItem(listview1, listview2)
                     }
                 }
                 highlight: Rectangle {
@@ -71,9 +74,7 @@ Page {
                 id: addButton
                 onClicked: {
                     console.log('(→) clicked')
-                    listview2.model.append(listview1.model.get(
-                                               listview1.currentIndex))
-                    listview1.model.remove(listview1.currentIndex)
+                    onDoubleClicked: moveItem(listview1, listview2)
                 }
             }
 
@@ -82,9 +83,7 @@ Page {
                 id: removeButton
                 onClicked: {
                     console.log('(←) clicked')
-                    listview1.model.append(listview2.model.get(
-                                               listview2.currentIndex))
-                    listview2.model.remove(listview2.currentIndex)
+                    onDoubleClicked: moveItem(listview2, listview1)
                 }
             }
         }
@@ -111,11 +110,7 @@ Page {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: listview2.currentIndex = index
-                        onDoubleClicked: {
-                            listview1.model.append(listview2.model.get(
-                                                       listview2.currentIndex))
-                            listview2.model.remove(listview2.currentIndex)
-                        }
+                        onDoubleClicked: moveItem(listview2, listview1)
                     }
                 }
                 highlight: Rectangle {
