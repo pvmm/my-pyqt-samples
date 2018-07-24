@@ -5,6 +5,7 @@ Page {
     id: page3
     width: 600
     height: 400
+    spacing: -1
 
     header: Label {
         text: qsTr("Filtro (Opcional):")
@@ -14,52 +15,44 @@ Page {
 
     Grid {
         id: grid
-        x: 0
-        y: 114
-        width: 600
-        height: 67
-        layoutDirection: Qt.LeftToRight
-        flow: Grid.LeftToRight
-        rows: 2
+        x: 30
+        y: 42
+        width: parent.width * .9
+        height: 200
+        spacing: 5
         columns: 2
-        horizontalItemAlignment: Grid.AlignHCenter
-        verticalItemAlignment: Grid.AlignHCenter
-        spacing: 10.
+        rows: 2
 
         Label {
-            id: label1
-            x: 133
+            x: 126
             y: 102
-            color: "#2b2626"
+            //            color: "#2b2626"
             text: qsTr("Coluna")
             font.pointSize: 12
         }
 
         Label {
-            id: label2
-            x: 413
+            x: 429
             y: 102
-            color: "#2b2626"
+            //            color: "#2b2626"
             text: qsTr("Valor")
             font.pointSize: 12
         }
 
         ComboBox {
-            id: comboBox
-            //x: 46
-            //y: 127
-            //width: 240
-            //height: 40
-            width: grid.width * .40
+            id: comboBox_filtro_coluna
+            x: 16
+            y: 135
+            width: parent.width * .5
+            height: 40
         }
 
         ComboBox {
-            id: comboBox1
-            //x: 313
-            //y: 127
-            //width: 240
-            //height: 40
-            width: parent.width * .40
+            id: comboBox_filtro_valor
+            x: 314
+            y: 135
+            width: parent.width * .5
+            height: 40
         }
     }
 }

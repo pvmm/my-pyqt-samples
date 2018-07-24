@@ -12,8 +12,13 @@ Page {
         padding: 10
     }
 
-    Label {
-        text: qsTr("You are on Page 6.")
-        anchors.centerIn: parent
+    TextArea {
+        id: textArea
+        x: 30
+        y: 66
+        width: parent.width * .9
+        height: 210
+        text: qsTr("Text Area")
+        readOnly: true
     }
 }
