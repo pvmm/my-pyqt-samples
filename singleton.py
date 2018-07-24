@@ -18,7 +18,7 @@ class Singleton(QObject):
     def x(self):
         return "x"
 
-    @pyqtSlot()
-    def xpto(self):
-        print("xpto called.")
+    @pyqtSlot(int, int, int)
+    def xpto(self, *args):
+        print("xpto called: " + str(args))
 

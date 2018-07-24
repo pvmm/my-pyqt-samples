@@ -14,7 +14,7 @@ ApplicationWindow {
     flags: Qt.Window | Qt.WindowTitleHint | Qt.WindowCloseButtonHint
 
     Component.onCompleted: {
-        PySingleton.xpto();
+        PySingleton.xpto(1, 2, 3);
         console.log(PySingleton.x);
     }
 
