@@ -9,7 +9,7 @@ class Singleton(QObject):
     urlChanged = pyqtSignal()
     __instance = None
     _path = os.path.expanduser('~') if 'RELEASE' in os.environ else os.path.join(os.path.dirname(os.path.realpath(__file__)), 'exemplo')
-    _colunas_disponiveis = ['CEP', 'Endereço', 'RA', 'AAA', 'BBB']
+    _colunas_disponiveis = ['CEP', 'Endereço', 'RA', 'AAA', 'BBB'] # TODO: ler essa lista do arquivo csv.
     _colunas_escolhidas = []
     _url = 'http://geocodeapi.codeplan.df.gov.br'
 
