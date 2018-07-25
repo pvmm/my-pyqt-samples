@@ -1,10 +1,10 @@
 # coding: utf-8
-import sys
+import sys, os
 
 
 class StdoutLogger:
     sys.stderr = sys.stdout
-    _loglevel = ['DEBUG', 'ERROR']
+    _loglevel = [] if 'RELEASE' in os.environ else ['DEBUG', 'INFO', 'WARNING', 'ERROR']
 
 
     @classmethod
@@ -20,34 +20,34 @@ class StdoutLogger:
     @classmethod
     def debug(cls, msg):
         if 'DEBUG' in cls._loglevel:
-            print(msg)
+            print('[DEBUG] %s' % msg)
         
 
     @classmethod
     def info(cls, msg):
         if 'INFO' in cls._loglevel:
-            print(msg)
+            print('[INFO] %s' % msg)
     
 
     @classmethod
     def error(cls, msg):
         if 'ERROR' in cls._loglevel:
-            print(msg)
-        
+            print('[ERROR] %s' % msg)
+
 
     @classmethod
     def critical(cls, msg):
-        print(msg)
+        print('[CRITICAL] %s' % msg)
         exit()
         
 
     @classmethod
     def warning(cls, msg):
         if 'WARNING' in cls._loglevel:
-            print(msg)
+            print('[WARNING] %s' % msg)
 
 
     @classmethod
     def trace(cls, msg):
-        print(msg)
+        print('[TRACE] %s' % msg)
 

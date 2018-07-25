@@ -72,7 +72,7 @@ class Singleton(QObject):
 
     @pyqtSlot(str, name='abreArquivo')
     def abre_arquivo(self, arquivo):
-        print('abre_arquivo() called: ' + arquivo)
+        Logger.info('abre_arquivo() called with "%s".' % arquivo)
         if arquivo != '' and os.path.exists(arquivo):
             dados_arquivo_original, colunas_arquivo_original = prep_files.lista_colunas(arquivo, delimitador)
             Logger.debug(dados_arquivo_original)
