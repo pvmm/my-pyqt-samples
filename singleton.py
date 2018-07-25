@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal, pyqtProperty
+import os
+import prep_files
+from logger import StdoutLogger as Logger
 
 
 class Singleton(QObject):
@@ -59,4 +62,15 @@ class Singleton(QObject):
     def remove_coluna(self, coluna):
         print("removendo '%s'" % coluna)
         self._colunas_escolhidas.remove(coluna)
+
+
+    @pyqtSlot(str, name='abreArquivo')
+    def abre_arquivo(self, arquivo):
+        print('abre_arquivo() called: ' + arquivo)
+        if arquivo != '' and os.path.exists(arquivo):
+            dados_arquivo_original, colunas_arquivo_original = prep_files.lista_colunas(arquivo, delimitador)
+            print(dados_arquivo_original)
+            print(colunas_arquivo_original)
+        else:
+            Logger.error('%s: file not found' % arquivo)
 

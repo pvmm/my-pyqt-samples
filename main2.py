@@ -20,11 +20,25 @@ from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty
 from PyQt5 import QtQuick
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtQml import QQmlApplicationEngine, qmlRegisterSingletonType
+
 Logger.debug("Bibliotecas do PyQt5 carregadas.")
 
 
 if __name__ == "__main__":
     os.environ['QT_QUICK_CONTROLS_STYLE']='Universal'
+
+    # Define função de captura de erro para capturar erros com QML.
+    import traceback
+
+    def excepthook(exctype, value, tb):
+        print('** Error Information **')
+        print('Type:', exctype)
+        print('Message:', value)
+        traceback.print_tb(tb)
+        exit()
+    sys.excepthook = excepthook
+    Logger.debug("Captura de erros ativada.")
+
 
     # Create an instance of the application
     app = QGuiApplication(sys.argv)
@@ -44,9 +58,9 @@ if __name__ == "__main__":
     swipeView = win.findChild(QtQuick.QQuickItem, "view")
     row = win.findChild(QtQuick.QQuickItem, "row")
     #Logger.debug("children = %s." % win.children())
-	
     Logger.debug("swipeView = %s" % swipeView)
     Logger.debug("row = %s" % row)
 	
     engine.quit.connect(app.quit)
     sys.exit(app.exec_())
+

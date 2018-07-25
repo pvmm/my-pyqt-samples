@@ -1,6 +1,7 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Dialogs 1.0
+import PySingletonModule 1.0
 
 Page {
     id: page1
@@ -9,6 +10,10 @@ Page {
 
     function onDisplay() {
         previous.enabled = false
+    }
+
+    function onFinish() {
+        PySingleton.abreArquivo(lb_nome_arquivo.text)
     }
 
     header: Label {
