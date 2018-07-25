@@ -75,6 +75,13 @@ ApplicationWindow {
             width: parent.width / 2
 
             onClicked: {
+                // Se onFinish() existir e retornar false, cancela o avanço de tela.
+                if (typeof view.currentItem.onFinish === "function") {
+                    if (view.currentItem.onFinish() === false) {
+                        return
+                    }
+                }
+
                 previous.enabled = true;
                 view.currentIndex = view.currentIndex + 1;
 
