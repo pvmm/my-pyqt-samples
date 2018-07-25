@@ -60,13 +60,13 @@ class Singleton(QObject):
 
     @pyqtSlot(str, name='adicionaColuna')
     def adiciona_coluna(self, coluna):
-        print("adiciona '%s'" % coluna)
+        Logger.debug("adiciona '%s'" % coluna)
         self._colunas_escolhidas.append(coluna)
 
 
     @pyqtSlot(str, name='removeColuna')
     def remove_coluna(self, coluna):
-        print("removendo '%s'" % coluna)
+        Logger.debug("removendo '%s'" % coluna)
         self._colunas_escolhidas.remove(coluna)
 
 
@@ -75,8 +75,8 @@ class Singleton(QObject):
         print('abre_arquivo() called: ' + arquivo)
         if arquivo != '' and os.path.exists(arquivo):
             dados_arquivo_original, colunas_arquivo_original = prep_files.lista_colunas(arquivo, delimitador)
-            print(dados_arquivo_original)
-            print(colunas_arquivo_original)
+            Logger.debug(dados_arquivo_original)
+            Logger.debug(colunas_arquivo_original)
         else:
             Logger.error('"%s": file not found' % arquivo)
 
