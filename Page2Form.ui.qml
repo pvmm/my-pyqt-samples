@@ -10,13 +10,17 @@ Page {
     function onDisplay() {
         checaBotaoAvancar()
 
+        // Lista de colunas disponíveis lida do arquivo .CSV.
         if (listview2.model.length === 0) {
             listview1.model = PySingleton.colunas_disponiveis
         }
 
+        // Desativa botão de próximo se não existem colunas disponíveis no arquivo lido.
         if (listview1.model.length === 0) {
             addButton.enabled = false
         }
+
+        listview1.forceActiveFocus()
     }
 
     function checaBotaoAvancar() {
@@ -40,7 +44,8 @@ Page {
     function adicionaColuna() {
         if (PySingleton.colunas.length < 4) {
             if (listview1.model[listview1.currentIndex]) {
-                PySingleton.adicionaColuna(listview1.model[listview1.currentIndex])
+                PySingleton.adicionaColuna(
+                            listview1.model[listview1.currentIndex])
                 moveItem(listview1, listview2)
             }
         }
@@ -78,20 +83,34 @@ Page {
             Rectangle {
                 width: 180
                 height: 200
-                color: "#FFFFFF"
+                color: "#ffffff"
                 radius: 2
+                border.width: 2
+                border.color: listview1.focus ? "#6b6b6b" : "#ffffff"
 
                 ListView {
                     id: listview1
+                    anchors.margins: 2
                     anchors.fill: parent
                     keyNavigationEnabled: true
                     model: []
 
+                    Keys.onPressed: {
+                        if (event.key === Qt.Key_Space)
+                            adicionaColuna()
+                        else if (event.key === Qt.Key_Return)
+                            adicionaColuna()
+                        else if (event.key === Qt.Key_Right)
+                            listview2.forceActiveFocus()
+                    }
+
                     delegate: Text {
                         text: modelData
-                        width: parent.width
+                        width: parent.width-2
                         height: 30
                         verticalAlignment: Text.AlignVCenter
+                        padding: 2
+
                         MouseArea {
                             anchors.fill: parent
                             onClicked: listview1.currentIndex = index
@@ -99,11 +118,11 @@ Page {
                         }
                     }
                     highlight: Rectangle {
+                        x: 1
                         color: "lightsteelblue"
                         radius: 2
                     }
                     highlightFollowsCurrentItem: true
-                    focus: true
                 }
             }
 
@@ -127,14 +146,26 @@ Page {
             Rectangle {
                 width: 180
                 height: 200
-                color: "#FFFFFF"
+                color: "#ffffff"
                 radius: 2
+                border.width: 2
+                border.color: listview2.focus ? "#6b6b6b" : "#ffffff"
 
                 ListView {
                     id: listview2
+                    anchors.margins: 2
                     anchors.fill: parent
                     keyNavigationEnabled: true
                     model: []
+
+                    Keys.onPressed: {
+                        if (event.key === Qt.Key_Space)
+                            removeColuna()
+                        else if (event.key === Qt.Key_Return)
+                            removeColuna()
+                        else if (event.key === Qt.Key_Left)
+                            listview1.forceActiveFocus()
+                    }
 
                     delegate: Text {
                         text: modelData
