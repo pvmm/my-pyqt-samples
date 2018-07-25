@@ -9,10 +9,18 @@ Page {
 
     function onDisplay() {
         checaBotaoAvancar()
+
+        if (listview2.model.length === 0) {
+            listview1.model = PySingleton.colunas_disponiveis
+        }
+
+        if (listview1.model.length === 0) {
+            addButton.enabled = false
+        }
     }
 
     function checaBotaoAvancar() {
-        if (PySingleton.colunas === 0) {
+        if (PySingleton.colunas.length === 0) {
             next.enabled = false
         } else {
             next.enabled = true
@@ -20,19 +28,23 @@ Page {
     }
 
     function moveItem(listview1, listview2) {
-        listview2.model.append(listview1.model.get(listview1.currentIndex))
-        listview1.model.remove(listview1.currentIndex)
+        var list2 = listview2.model
+        list2.push(listview1.model[listview1.currentIndex])
+        listview2.model = list2
+
+        var list1 = listview1.model
+        list1.splice(listview1.currentIndex, 1)
+        listview1.model = list1
     }
 
     function adicionaColuna() {
-        if (PySingleton.colunas < 4) {
-            if (listview1.model.get(listview1.currentIndex)) {
-                PySingleton.adicionaColuna(listview1.model.get(
-                                               listview1.currentIndex).name)
+        if (PySingleton.colunas.length < 4) {
+            if (listview1.model[listview1.currentIndex]) {
+                PySingleton.adicionaColuna(listview1.model[listview1.currentIndex])
                 moveItem(listview1, listview2)
             }
         }
-        if (PySingleton.colunas === 4) {
+        if (PySingleton.colunas.length === 4) {
             addButton.enabled = false
         }
         removeButton.enabled = true
@@ -40,13 +52,12 @@ Page {
     }
 
     function removeColuna() {
-        if (listview2.model.get(listview2.currentIndex)) {
-            PySingleton.removeColuna(listview2.model.get(
-                                         listview2.currentIndex).name)
+        if (listview2.model[listview2.currentIndex]) {
+            PySingleton.removeColuna(listview2.model[listview2.currentIndex])
             moveItem(listview2, listview1)
             addButton.enabled = true
         }
-        if (PySingleton.colunas === 0) {
+        if (PySingleton.colunas.length === 0) {
             removeButton.enabled = false
         }
         checaBotaoAvancar()
@@ -74,27 +85,10 @@ Page {
                     id: listview1
                     anchors.fill: parent
                     keyNavigationEnabled: true
-
-                    model: ListModel {
-                        ListElement {
-                            name: "RA"
-                        }
-                        ListElement {
-                            name: "Endereço"
-                        }
-                        ListElement {
-                            name: "CEP"
-                        }
-                        ListElement {
-                            name: "AAA"
-                        }
-                        ListElement {
-                            name: "BBB"
-                        }
-                    }
+                    model: []
 
                     delegate: Text {
-                        text: name
+                        text: modelData
                         width: parent.width
                         height: 30
                         verticalAlignment: Text.AlignVCenter
@@ -140,12 +134,10 @@ Page {
                     id: listview2
                     anchors.fill: parent
                     keyNavigationEnabled: true
-
-                    model: ListModel {
-                    }
+                    model: []
 
                     delegate: Text {
-                        text: name
+                        text: modelData
                         width: parent.width
                         height: 30
                         verticalAlignment: Text.AlignVCenter
@@ -160,7 +152,6 @@ Page {
                         radius: 2
                     }
                     highlightFollowsCurrentItem: true
-                    //focus: true
                 }
             }
         }
