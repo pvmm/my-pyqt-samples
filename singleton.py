@@ -3,11 +3,12 @@ from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal, pyqtProperty
 
 
 class Singleton(QObject):
-    url_changed = pyqtSignal()
+    urlChanged = pyqtSignal()
     __instance = None
-    _url = 'http://geocodeapi.codeplan.df.gov.br'
     _colunas_disponiveis = ['CEP', 'Endereço', 'RA', 'AAA', 'BBB']
     _colunas_escolhidas = []
+    _url = 'http://geocodeapi.codeplan.df.gov.br'
+
 
     def __init__(self, parent = None):
         if self.__class__.__instance != None:
@@ -22,15 +23,11 @@ class Singleton(QObject):
     def getInstance(cls, *args):
         if cls.__instance == None:
             cls.__instance = cls()
+
         return cls.__instance
 
 
-    @pyqtProperty('QString', notify=url_changed)
-    def url(self):
-        return self._url
-
-
-    @pyqtProperty(list)
+    @pyqtProperty(list, constant=True)
     def colunas_disponiveis(self):
         return self._colunas_disponiveis
 
@@ -40,10 +37,16 @@ class Singleton(QObject):
         return self._colunas_escolhidas
 
 
+    @pyqtProperty(str, notify=urlChanged)
+    def url(self):
+        return self._url
+
+
     @url.setter
-    def setUrl(self, url):
-        self._url = url
-        self.url_changed.emit()
+    def url(self, url):
+        if self._url != url:
+            self._url = url
+            self.urlChanged.emit()
 
 
     @pyqtSlot(str, name='adicionaColuna')
