@@ -40,7 +40,7 @@ Page {
         id: fileDialog
         title: "Selecione um arquivo .csv"
         folder: PySingleton.path
-        nameFilters: ["Arquivos csv (*.csv)"]
+        nameFilters: [qsTr("Arquivos csv (*.csv)")]
 
         //Component.onCompleted: visible = false
         visible: false
@@ -49,6 +49,7 @@ Page {
     ButtonGroup {
         id: cb_delimitador
     }
+
     function checkedComboBox() {
         if (delimitador_outro.checked === true) {
             delimitador_outro_tf.readOnly = false
