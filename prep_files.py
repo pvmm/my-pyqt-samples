@@ -6,8 +6,6 @@ label_key = 'KEY'
 # Envia mensagem de log para saída padrão.
 if 'DEBUG' in os.environ:
     from logger import StdoutLogger as Logger
-else:
-    from kivy.logger import Logger
 
 def lista_colunas(arquivo_original, delimitador):
     '''

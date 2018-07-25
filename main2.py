@@ -28,16 +28,17 @@ if __name__ == "__main__":
     os.environ['QT_QUICK_CONTROLS_STYLE']='Universal'
 
     # Define função de captura de erro para capturar erros com QML.
-    import traceback
+    if 'RELEASE' not in os.environ:
+        import traceback
 
-    def excepthook(exctype, value, tb):
-        print('** Error Information **')
-        print('Type:', exctype)
-        print('Message:', value)
-        traceback.print_tb(tb)
-        exit()
-    sys.excepthook = excepthook
-    Logger.debug("Captura de erros ativada.")
+        def excepthook(exctype, value, tb):
+            print('** Error Information **')
+            print('Type:', exctype)
+            print('Message:', value)
+            traceback.print_tb(tb)
+            exit()
+        sys.excepthook = excepthook
+        Logger.debug("Captura de erros ativada.")
 
 
     # Create an instance of the application

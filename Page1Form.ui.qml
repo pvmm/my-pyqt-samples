@@ -39,7 +39,7 @@ Page {
     FileDialog {
         id: fileDialog
         title: "Selecione um arquivo .csv"
-        folder: shortcuts.home
+        folder: PySingleton.path
         nameFilters: ["Arquivos csv (*.csv)"]
 
         //Component.onCompleted: visible = false

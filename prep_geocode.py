@@ -11,8 +11,6 @@ import encodings.idna
 # Envia mensagem de log para saída padrão.
 if 'DEBUG' in os.environ:
     from logger import StdoutLogger as Logger
-else:
-    from kivy.logger import Logger
 
 def gera_lista_final(dct_pesquisa):
     '''

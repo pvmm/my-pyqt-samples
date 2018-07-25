@@ -8,6 +8,7 @@ from logger import StdoutLogger as Logger
 class Singleton(QObject):
     urlChanged = pyqtSignal()
     __instance = None
+    _path = os.path.expanduser('~') if 'RELEASE' in os.environ else os.path.join(os.path.dirname(os.path.realpath(__file__)), 'exemplo')
     _colunas_disponiveis = ['CEP', 'Endereço', 'RA', 'AAA', 'BBB']
     _colunas_escolhidas = []
     _url = 'http://geocodeapi.codeplan.df.gov.br'
@@ -38,6 +39,11 @@ class Singleton(QObject):
     @pyqtProperty(list)
     def colunas(self):
         return self._colunas_escolhidas
+
+
+    @pyqtProperty(str, constant=True)
+    def path(self):
+        return self._path
 
 
     @pyqtProperty(str, notify=urlChanged)
@@ -72,5 +78,5 @@ class Singleton(QObject):
             print(dados_arquivo_original)
             print(colunas_arquivo_original)
         else:
-            Logger.error('%s: file not found' % arquivo)
+            Logger.error('"%s": file not found' % arquivo)
 
