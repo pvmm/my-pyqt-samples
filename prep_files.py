@@ -1,5 +1,6 @@
 ﻿# -*- coding: UTF-8 -*-
 import csv, uuid, os, zipfile, string, platform
+from logger import StdoutLogger as Logger
 
 label_key = 'KEY'
 
@@ -7,7 +8,18 @@ label_key = 'KEY'
 if 'DEBUG' in os.environ:
     from logger import StdoutLogger as Logger
 
-def lista_colunas(arquivo_original, delimitador):
+def formata_nome_arquivo(nome_arquivo):
+    '''
+    Recebe o path do arquivo e retira no início a substring 'file://'
+    '''
+    # list_path = nome_arquivo.split(os.sep)
+    # del list_path[0:3]
+    # # print(os.sep.join(list_path))
+    # # return os.path.join()
+    # return ''
+    return nome_arquivo.replace('file:%s%s' % (os.sep, os.sep), '')
+
+def lista_colunas_e_dados(arquivo_original, delimitador):
     '''
     Abre arquivo csv original e adiciona uma chave única a cada registro. Retorna lista de registros (cada registro é um dicionário) e lista com elementos do cabeçalho do arquivo original.
     '''

@@ -1,5 +1,6 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
+import PySingletonModule 1.0
 
 Page {
     id: page3
@@ -11,6 +12,13 @@ Page {
         text: qsTr("Filtro (Opcional):")
         font.pixelSize: Qt.application.font.pixelSize * 2
         padding: 10
+    }
+
+    function onDisplay() {
+        var combobox_coluna = PySingleton.colunas_disponiveis
+        combobox_coluna.unshift('<Selecione>')
+        comboBox_filtro_coluna.model = combobox_coluna
+        //console.log(PySingleton.preenche_combobox_coluna())
     }
 
     Grid {
@@ -45,6 +53,12 @@ Page {
             y: 135
             width: parent.width * .5
             height: 40
+
+            onDisplayTextChanged: {
+                console.log(PySingleton.preenche_combobox_valor('RA'))
+                comboBox_filtro_valor.model = PySingleton.preenche_combobox_valor(
+                            this.currentText)
+            }
         }
 
         ComboBox {

@@ -73,6 +73,7 @@ ApplicationWindow {
             id: next
             text: qsTr("Avançar")
             width: parent.width / 2
+            enabled: false
 
             onClicked: {
                 // Se onFinish() existir e retornar false, cancela o avanço de tela.

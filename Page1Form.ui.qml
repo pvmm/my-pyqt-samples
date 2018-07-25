@@ -13,7 +13,7 @@ Page {
     }
 
     function onFinish() {
-        PySingleton.abreArquivo(lb_nome_arquivo.text)
+        //PySingleton.abreArquivo(lb_nome_arquivo.text)
     }
 
     header: Label {
@@ -44,6 +44,13 @@ Page {
 
         //Component.onCompleted: visible = false
         visible: false
+
+        onAccepted: {
+            var delimitador = escolheDelimitador()
+            PySingleton.manipulaArquivo(fileDialog.fileUrl, delimitador)
+            lb_nome_arquivo.text = fileDialog.fileUrl
+            next.enabled = true
+        }
     }
 
     ButtonGroup {
@@ -51,10 +58,20 @@ Page {
     }
 
     function checkedComboBox() {
-        if (delimitador_outro.checked === true) {
-            delimitador_outro_tf.readOnly = false
-        } else
-            delimitador_outro_tf.readOnly = true
+        delimitador_outro_tf.readOnly = (delimitador_outro.checked === true ? false : true)
+    }
+    function escolheDelimitador() {
+        var delimitador
+        if (delimitador_ponto_virgula.checked === true)
+            delimitador = delimitador_ponto_virgula.text
+        else if (delimitador_virgula.checked === true)
+            delimitador = delimitador_virgula.text
+        else if (delimitador_outro.checked === true
+                 && delimitador_outro_tf.text !== '')
+            delimitador = delimitador_outro_tf.text
+        else
+            delimitador = delimitador_ponto_virgula.text
+        return delimitador
     }
 
     RadioButton {
@@ -122,7 +139,7 @@ Page {
         width: parent.width
         height: 17
         //text: qsTr("/home/user/Documents/AMOSTRA.csv")
-        text: (fileDialog.fileUrl)
+        //text: (fileDialog.fileUrl)
         font.bold: true
         horizontalAlignment: Text.AlignHCenter
     }
