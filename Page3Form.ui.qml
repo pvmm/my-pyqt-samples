@@ -53,11 +53,19 @@ Page {
             y: 135
             width: parent.width * .5
             height: 40
+            model: []
+
+            Connections {
+                target: PySingleton
+                onValoresFiltradosChanged: {
+                    console.log('onValoresFiltradosChanged!')
+                    comboBox_filtro_valor.model = PySingleton.valores_filtrados
+                }
+            }
 
             onDisplayTextChanged: {
-                console.log(PySingleton.preenche_combobox_valor('RA'))
-                comboBox_filtro_valor.model = PySingleton.preenche_combobox_valor(
-                            this.currentText)
+                console.log('onDisplayTextChanged.current text = ' + currentText)
+                PySingleton.filtraColuna(currentText)
             }
         }
 
