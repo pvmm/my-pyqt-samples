@@ -7,7 +7,7 @@ from logger import StdoutLogger as Logger
 
 class Singleton(QObject):
     urlChanged = pyqtSignal(str)
-    valoresFiltradosChanged = pyqtSignal(list)
+    valoresFiltradosChanged = pyqtSignal()
 
     __instance = None
     _path = os.path.expanduser('~') if 'RELEASE' in os.environ else os.path.join(os.path.dirname(os.path.realpath(__file__)), 'exemplo')
@@ -91,6 +91,7 @@ class Singleton(QObject):
         else:
             Logger.error('"%s": arquivo não encontrado' % arquivo)
 
+
     @pyqtSlot(str, name='registrosPorArquivo')
     def registros_por_arquivo(self, qtd_registros):        
         tam = len(self._dados_arquivo_original)
@@ -100,11 +101,10 @@ class Singleton(QObject):
     @pyqtSlot(str, name='filtraColuna')
     def filtra_coluna(self, coluna):
         Logger.debug('coluna = "%s"' % coluna)
-        Logger.debug('coluna = "%s"' % ','.join(self._colunas_escolhidas))
         self._valores_filtrados = []
         self._coluna_filtrada = coluna
 
-        if coluna in self._colunas_escolhidas:
+        if coluna in self._colunas_disponiveis:
             conj_valores = set()
 
             for dado in self._dados_arquivo_original:
@@ -116,13 +116,17 @@ class Singleton(QObject):
             muitos_valores = '%d valores possíveis.' % len(valores_unicos)
             valores_unicos.insert(0, '<Selecione>')
             self._valores_filtrados.extend(valores_unicos if len(valores_unicos) <= 100 else [muitos_valores])
-
-        self.valoresFiltradosChanged.emit(self._valores_filtrados)
+            Logger.debug('%d valores encontrados para a coluna "%s".' % (len(valores_unicos), coluna))
+            self.valoresFiltradosChanged.emit()
+        else:
+            Logger.warning('"%s": coluna não encontrada entre as colunas escolhidas.' % coluna)
 
 
     @pyqtProperty(list, notify=valoresFiltradosChanged)
     def valores_filtrados(self):
+        """Obtem valores filtrados após processamento da função filtra_coluna()."""
         return self._valores_filtrados
+
 
     def process_button_click(self):
         http_code = prep_geocode.testa_conexao(self._url)
