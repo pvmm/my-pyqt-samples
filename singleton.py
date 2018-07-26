@@ -7,7 +7,7 @@ from logger import StdoutLogger as Logger
 
 class Singleton(QObject):
     urlChanged = pyqtSignal(str)
-    valoresFiltradosChanged = pyqtSignal()
+    valores_filtrados_changed = pyqtSignal(list, name='valoresFiltradosChanged', arguments=['valores'])
 
     __instance = None
     _path = os.path.expanduser('~') if 'RELEASE' in os.environ else os.path.join(os.path.dirname(os.path.realpath(__file__)), 'exemplo')
@@ -117,12 +117,12 @@ class Singleton(QObject):
             valores_unicos.insert(0, '<Selecione>')
             self._valores_filtrados.extend(valores_unicos if len(valores_unicos) <= 100 else [muitos_valores])
             Logger.debug('%d valores encontrados para a coluna "%s".' % (len(valores_unicos), coluna))
-            self.valoresFiltradosChanged.emit()
+            self.valores_filtrados_changed.emit(self._valores_filtrados)
         else:
             Logger.warning('"%s": coluna não encontrada entre as colunas escolhidas.' % coluna)
 
 
-    @pyqtProperty(list, notify=valoresFiltradosChanged)
+    @pyqtProperty(list, notify=valores_filtrados_changed)
     def valores_filtrados(self):
         """Obtem valores filtrados após processamento da função filtra_coluna()."""
         return self._valores_filtrados

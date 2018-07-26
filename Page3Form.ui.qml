@@ -58,9 +58,8 @@ Page {
             Connections {
                 target: PySingleton
                 onValoresFiltradosChanged: {
-                    console.log('onValoresFiltradosChanged: '
-                                + PySingleton.valores_filtrados.length)
-                    comboBox_filtro_valor.model = PySingleton.valores_filtrados
+                    console.log('onValoresFiltradosChanged: ' + valores.length)
+                    comboBox_filtro_valor.model = valores
                 }
             }
 
