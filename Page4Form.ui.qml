@@ -1,5 +1,6 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
+import PySingletonModule 1.0
 
 Page {
     id: page4
@@ -10,6 +11,22 @@ Page {
         text: qsTr("Quantidade de registros por arquivo:")
         font.pixelSize: Qt.application.font.pixelSize * 2
         padding: 10
+    }
+
+    function onFinish() {
+        //PySingleton.abreArquivo(lb_nome_arquivo.text)
+        var qtdRegistrosPorAquivo
+        if (rpa_todos.checked === true)
+            qtdRegistrosPorAquivo = rpa_todos.text
+        else if (rpa_10.checked === true)
+            qtdRegistrosPorAquivo = rpa_10.text
+        else if (rpa_100.checked === true)
+            qtdRegistrosPorAquivo = rpa_100.text
+        else if (rpa_mil.checked === true)
+            qtdRegistrosPorAquivo = rpa_mil.text
+        else
+            qtdRegistrosPorAquivo = rpa_10_mil.text
+        PySingleton.registrosPorArquivo(qtdRegistrosPorAquivo)
     }
 
     Row {

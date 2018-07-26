@@ -13,6 +13,8 @@ Page {
     }
 
     function onFinish() {
+        var delimitador = escolheDelimitador()
+        PySingleton.manipulaArquivo(fileDialog.fileUrl, delimitador)
         //PySingleton.abreArquivo(lb_nome_arquivo.text)
     }
 
@@ -46,8 +48,6 @@ Page {
         visible: false
 
         onAccepted: {
-            var delimitador = escolheDelimitador()
-            PySingleton.manipulaArquivo(fileDialog.fileUrl, delimitador)
             lb_nome_arquivo.text = fileDialog.fileUrl
             next.enabled = true
         }
@@ -98,7 +98,10 @@ Page {
         x: 304
         y: 171
         ButtonGroup.group: cb_delimitador
-        onClicked: checkedComboBox()
+        onClicked: {
+            checkedComboBox()
+            delimitador_outro_tf.forceActiveFocus()
+        }
     }
 
     TextField {
@@ -111,10 +114,10 @@ Page {
         maximumLength: 1
         placeholderText: "Outro"
         readOnly: true
-        /*onClicked: {
+        onPressed: {
             delimitador_outro.checked = true
             this.readOnly = false
-        }*/
+        }
     }
 
     Label {
