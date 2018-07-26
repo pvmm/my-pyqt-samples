@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal, pyqtProperty
-import os
+import os, re
 import prep_files, prep_geocode
 from logger import StdoutLogger as Logger
 
@@ -91,6 +91,11 @@ class Singleton(QObject):
         else:
             Logger.error('"%s": arquivo não encontrado' % arquivo)
 
+    @pyqtSlot(str, name='registrosPorArquivo')
+    def registros_por_arquivo(self, qtd_registros):        
+        tam = len(self._dados_arquivo_original)
+        self._registros_por_arquivo = tam if (qtd_registros == 'Todos') else int(re.sub('[^0-9]', '', qtd_registros))
+    
 
     @pyqtSlot(str, name='filtraColuna')
     def filtra_coluna(self, coluna):
@@ -119,3 +124,106 @@ class Singleton(QObject):
     def valores_filtrados(self):
         return self._valores_filtrados
 
+    def process_button_click(self):
+        http_code = prep_geocode.testa_conexao(self._url)
+        if http_code == 200:
+            self.show_popup('Aguarde o fim do processamento...')
+            mythread = threading.Thread(target=self.inicia_processamento)
+            mythread.start()
+        else:
+            self.show_popup('Verifique a URL do serviço de geocodificação.')
+
+    def inicia_processamento(self):
+        # colunas = self.recupera_labels()
+        colunas = colunas_selecionadas[:]
+        dados_preparados = prep_files.prepara_dados(self._dados_arquivo_original, colunas)
+        dados_padronizados = prep_files.padroniza_dados(dados_preparados)
+
+        prep_files.gera_arquivo(self._dados_arquivo_original, 'original', self._arquivo, self._colunas_disponiveis)
+
+        labels_arquivo_geocode = ['KEY', 'COLUNA_PESQ', 'DADO_COMPL_PESQ', 'DADO_PESQ', 'LOCAL_ENCONTRADO', 'SIMILARIDADE', 'LAT', 'LONG']
+
+        fatias = list( prep_geocode.fatia_lista(dados_padronizados, self._registros_por_arquivo) )
+        val = 0
+        for v in fatias:
+            val += 1
+
+            dct_pesquisa = {'prioridade': colunas, 'dados': v, 'geocode_service': self._url}
+            # lista_final = prep_geocode.gera_lista_final(dct_pesquisa)
+            lista_final = self.gera_lista_final(dct_pesquisa)
+
+            prep_files.gera_arquivo(lista_final, 'geocode' + str(val), arquivo, labels_arquivo_geocode)
+
+        self.lista_arquivos_gerados()
+
+        ## Fecha pop up de progresso
+        # self.pop_up.dismiss()
+
+
+    def gera_lista_final(self, dct_pesquisa):
+        '''
+        Recebe dicionário com dados do arquivo csv (lista de dicionários com a chave e com as colunas a serem geocodificadas) e lista de colunas na ordem que deve ser feita a geocodificação.
+        Monta a lista final que será gravada em novo arquivo csv aplicando a função _consulta_geocode para cada registro.
+        '''
+        try:
+            dados = dct_pesquisa['dados']
+            colunas = dct_pesquisa['prioridade']
+            geocode_service = dct_pesquisa['geocode_service']
+
+            dados_finais = []
+            total = len(dados)
+            ct = 1
+
+            for d in dados:
+
+                lb_key = 'KEY'
+                key = d[lb_key]
+
+                dct = {lb_key: key}
+
+                for c in colunas:
+                    if c in list(d.keys()):
+                        result_set = prep_geocode._consulta_geocode(d[c], c, geocode_service)
+                        dct.update(result_set)
+                        if dct['SIMILARIDADE']!=0.0:
+                            break
+
+                dados_finais.append(dct)
+
+                ## Atualiza contador do pop up de progresso
+                # self.pop_up.update_pop_up_text(str(ct) + ' de ' + str(total))
+
+                Logger.debug('main: {0} de {1}'.format(ct, total))
+                ct += 1
+
+            return dados_finais
+        except Exception as e:
+            Logger.error('main: Erro ao gerar lista final: %s' % e)
+            raise e
+
+    def lista_arquivos_gerados(self):
+        try:
+            diretorio, arquivo_saida = prep_files._identifica_diretorio(self._arquivo)
+            diretorio_saida = os.path.join(diretorio, 'files_%s' % arquivo_saida.replace('.csv', ''))
+
+            if os.path.exists(diretorio_saida):
+                lista_arquivos = os.listdir(diretorio_saida)
+                lista_arquivos_ordenada = sorted(lista_arquivos)
+
+                text_label = 'Arquivos gerados:\n\t' + diretorio_saida
+
+                for i in lista_arquivos_ordenada:
+                    text_label += ('\n\t\t' + i)
+
+                ## Atualiza a textarea da última tela com os arquivos gerados
+                # App.get_running_app().root.screens[index_screen].ids.text_input_diretorio.text = text_label
+            else:
+                text_label = 'Houve um problema ao acessar o diretório de saída. Verifique se novos arquivos foram gerados no diretório do arquivo csv original.'
+                ## Atualiza a textarea da última tela com os arquivos gerados
+                # App.get_running_app().root.screens[index_screen].ids.text_input_diretorio.text = text_label
+        except Exception as e:
+            Logger.error('main: error %s' % e)
+            raise e
+            text_label = 'Verifique se novos arquivos foram gerados no diretório do arquivo csv original.'
+            ## Atualiza a textarea da última tela com os arquivos gerados
+            # App.get_running_app().root.screens[index_screen].ids.text_input_diretorio.text = text_label
