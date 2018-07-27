@@ -3,6 +3,7 @@ import csv, uuid, os, zipfile, string, platform
 from logger import StdoutLogger as Logger
 
 label_key = 'KEY'
+_encoding = 'latin-1' if platform.system() == 'Windows' else 'utf-8'
 
 # Envia mensagem de log para saída padrão.
 if 'DEBUG' in os.environ:
@@ -24,7 +25,7 @@ def lista_colunas_e_dados(arquivo_original, delimitador):
     Abre arquivo csv original e adiciona uma chave única a cada registro. Retorna lista de registros (cada registro é um dicionário) e lista com elementos do cabeçalho do arquivo original.
     '''
     try:
-        with open(arquivo_original, encoding='latin-1') as arquivo:
+        with open(arquivo_original, encoding=_encoding) as arquivo:
             dict_reader = csv.DictReader(arquivo, delimiter=str(delimitador))
             # dict_reader = csv.DictReader(arquivo, delimiter=str(delimitador), dialect='excel')
             headers_arquivo = dict_reader.fieldnames
@@ -34,7 +35,7 @@ def lista_colunas_e_dados(arquivo_original, delimitador):
                     key = uuid.uuid4()
                     l[label_key] = str(key)
                     linhas.append(l)
-
+        
         Logger.debug('prep_files: linhas = %i.' % len(linhas))
         return linhas, headers_arquivo
 
@@ -123,7 +124,7 @@ def gera_arquivo(lista_final, prefixo, dir_arquivo, labels):
 
         novo_arquivo = os.path.join(diretorio, '%s_%s' % (prefixo, arquivo))
 
-        with open(novo_arquivo, 'w', encoding='latin-1') as saida:
+        with open(novo_arquivo, 'w', encoding=_encoding) as saida:
 
             if label_key not in labels:
                 labels.insert(0, label_key)

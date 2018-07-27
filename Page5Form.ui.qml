@@ -1,6 +1,7 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 import PySingletonModule 1.0
+import QtQuick.Dialogs 1.2
 
 Page {
     id: page5
@@ -10,6 +11,10 @@ Page {
     function onDisplay() {
         // Ultima tela antes de confirmar operação.
         next.text = qsTr("Concluir")
+    }
+
+    function onFinish() {
+        dialog.visible = true
     }
 
     header: Label {
@@ -25,6 +30,15 @@ Page {
         width: parent.width * .9
         height: 40
         text: PySingleton.url
+    }
+
+    Dialog {
+        id: dialog
+        visible: false
+        title: qsTr("Processando...")
+        Text {
+            text: qsTr("Atualizar contador de processamento.")
+        }
     }
 }
 

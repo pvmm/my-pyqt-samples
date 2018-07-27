@@ -8,6 +8,7 @@ from logger import StdoutLogger as Logger
 class Singleton(QObject):
     urlChanged = pyqtSignal(str)
     valores_filtrados_changed = pyqtSignal(list, name='valoresFiltradosChanged', arguments=['valores'])
+    # msg_filtro_ignorado = pyqtSignal(str, name='msgFiltroIgnorado', arguments='msg')
 
     __instance = None
     _path = os.path.expanduser('~') if 'RELEASE' in os.environ else os.path.join(os.path.dirname(os.path.realpath(__file__)), 'exemplo')
@@ -23,6 +24,8 @@ class Singleton(QObject):
     # Página 3
     _coluna_filtrada = ''
     _valores_filtrados = []
+
+    _filtro_ignorado = False
 
 
     def __init__(self, parent = None):
@@ -126,6 +129,30 @@ class Singleton(QObject):
     def valores_filtrados(self):
         """Obtem valores filtrados após processamento da função filtra_coluna()."""
         return self._valores_filtrados
+
+    
+    @pyqtSlot(str, str, name='filtraDados')
+    def filtra_dados(self, filtro_coluna, filtro_valor):
+        # if (filtro_coluna != '<Selecione>' and filtro_valor != '<Selecione>'):
+        if (filtro_coluna in self.colunas_disponiveis and filtro_valor != '<Selecione>'):
+            # Logger.debug("%s, %s" % (filtro_coluna, filtro_valor))
+            dados = self._dados_arquivo_original[:]
+            for i in dados:
+                if i[filtro_coluna] != filtro_valor:
+                    self._dados_arquivo_original.remove(i)
+            if len(self._dados_arquivo_original)==0:
+                # msg = 'Nenhum registro encontrado para o filtro especificado.\nO filtro será ignorado.'
+                self._dados_arquivo_original = dados[:]
+                # self.msg_filtro_ignorado.emit(msg)
+                self._filtro_ignorado = True
+            else:
+                self._filtro_ignorado = False
+
+        Logger.debug('Filtro: %i registro(s) para {%s: %s}' % (len(self._dados_arquivo_original), filtro_coluna, filtro_valor))
+
+    @pyqtProperty(bool)
+    def filtro_ignorado(self):
+        return self._filtro_ignorado
 
 
     def process_button_click(self):

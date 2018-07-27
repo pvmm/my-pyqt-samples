@@ -1,6 +1,7 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 import PySingletonModule 1.0
+import QtQuick.Dialogs 1.2
 
 Page {
     id: page3
@@ -19,6 +20,22 @@ Page {
         combobox_coluna.unshift('<Selecione>')
         comboBox_filtro_coluna.model = combobox_coluna
         //console.log(PySingleton.preenche_combobox_coluna())
+    }
+
+    function onFinish() {
+        PySingleton.filtraDados(comboBox_filtro_coluna.currentText,
+                                comboBox_filtro_valor.currentText)
+        if (PySingleton.filtro_ignorado)
+            dialog.visible = true
+    }
+
+    Dialog {
+        id: dialog
+        visible: false
+        title: qsTr("Filtro")
+        Text {
+            text: qsTr("Nenhum registro encontrado para o filtro especificado.\nO filtro será ignorado.")
+        }
     }
 
     Grid {
@@ -78,3 +95,8 @@ Page {
         }
     }
 }
+
+/*##^## Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+ ##^##*/
