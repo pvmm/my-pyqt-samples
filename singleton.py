@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal, pyqtProperty
-import os, re
+import os, re, typing
 import prep_files, prep_geocode
 from logger import StdoutLogger as Logger
 
@@ -98,7 +98,8 @@ class Singleton(QObject):
     @pyqtSlot(str, name='registrosPorArquivo')
     def registros_por_arquivo(self, qtd_registros: int):        
         tam = len(self._dados_arquivo_original)
-        self._registros_por_arquivo = tam if (qtd_registros == -1) else qtd_registros
+        Logger.debug('Filtro de %s elementos selecionado' % qtd_registros)
+        self._registros_por_arquivo = tam if (qtd_registros == -1) else int(qtd_registros)
     
 
     @pyqtSlot(str, name='filtraColuna')
