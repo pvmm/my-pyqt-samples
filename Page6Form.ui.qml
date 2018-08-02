@@ -6,7 +6,7 @@ Page {
     width: 600
     height: 400
 
-    function onDisplay() {
+    function onStart() {
         // Conclui operação e não permite mais voltar.
         previous.enabled = false
         next.text = qsTr("Fechar")

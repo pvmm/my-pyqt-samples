@@ -8,7 +8,7 @@ Page {
     width: 600
     height: 400
 
-    function onDisplay() {
+    function onStart() {
         // Ultima tela antes de confirmar operação.
         next.text = qsTr("Concluir")
     }

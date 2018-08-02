@@ -7,7 +7,7 @@ Page {
     width: 600
     height: 400
 
-    function onDisplay() {
+    function onStart() {
         checaBotaoAvancar()
 
         // Lista de colunas disponíveis lida do arquivo .CSV.

@@ -15,7 +15,7 @@ Page {
         padding: 10
     }
 
-    function onDisplay() {
+    function onStart() {
         var combobox_coluna = PySingleton.colunas_disponiveis
         combobox_coluna.unshift('<Selecione>')
         comboBox_filtro_coluna.model = combobox_coluna

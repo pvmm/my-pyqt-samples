@@ -64,8 +64,8 @@ ApplicationWindow {
                 next.enabled = true;
                 view.currentIndex = Math.max(view.currentIndex - 1, 0);
 
-                if (typeof view.currentItem.onDisplay === "function") {
-                    view.currentItem.onDisplay()
+                if (typeof view.currentItem.onStart === "function") {
+                    view.currentItem.onStart()
                 }
             }
         }
@@ -88,8 +88,8 @@ ApplicationWindow {
 
                 if (view.currentIndex == view.count) {
                     Qt.exit(0)
-                } else if (typeof view.currentItem.onDisplay === "function") {
-                    view.currentItem.onDisplay()
+                } else if (typeof view.currentItem.onStart === "function") {
+                    view.currentItem.onStart()
                 }
             }
         }
