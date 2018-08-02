@@ -13,20 +13,14 @@ Page {
         padding: 10
     }
 
+    function isChecked(c) {
+        return c.checked
+    }
+
     function onFinish() {
-        //PySingleton.abreArquivo(lb_nome_arquivo.text)
-        var qtdRegistrosPorAquivo
-        if (rpa_todos.checked === true)
-            qtdRegistrosPorAquivo = rpa_todos.value
-        else if (rpa_10.checked === true)
-            qtdRegistrosPorAquivo = rpa_10.value
-        else if (rpa_100.checked === true)
-            qtdRegistrosPorAquivo = rpa_100.value
-        else if (rpa_mil.checked === true)
-            qtdRegistrosPorAquivo = rpa_mil.value
-        else
-            qtdRegistrosPorAquivo = rpa_10_mil.value
-        PySingleton.registrosPorArquivo(qtdRegistrosPorAquivo)
+        var radio = [rpa_todos, rpa_10, rpa_100, rpa_mil, rpa_10_mil].filter(
+                    isChecked).pop()
+        PySingleton.registrosPorArquivo(radio.value)
     }
 
     Row {
