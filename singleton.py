@@ -6,8 +6,11 @@ from logger import StdoutLogger as Logger
 
 
 class Singleton(QObject):
-    urlChanged = pyqtSignal(str)
+    url_changed = pyqtSignal(str, name='urlChanged')
     valores_filtrados_changed = pyqtSignal(list, name='valoresFiltradosChanged', arguments=['valores'])
+    quantidade_registros_changed = pyqtSignal(int, name='quantidadeRegistrosChanged', arguments=['quantidade'])
+    registro_processado = pyqtSignal(int, name='registroProcessado', arguments=['indice'])
+
     # msg_filtro_ignorado = pyqtSignal(str, name='msgFiltroIgnorado', arguments='msg')
 
     __instance = None
@@ -60,7 +63,7 @@ class Singleton(QObject):
         return self._path
 
 
-    @pyqtProperty(str, notify=urlChanged)
+    @pyqtProperty(str, notify=url_changed)
     def url(self):
         return self._url
 
@@ -69,7 +72,7 @@ class Singleton(QObject):
     def url(self, url):
         if self._url != url:
             self._url = url
-            self.urlChanged.emit()
+            self.url_changed.emit()
 
 
     @pyqtSlot(str, name='adicionaColuna')
@@ -98,7 +101,7 @@ class Singleton(QObject):
     @pyqtSlot(str, name='registrosPorArquivo')
     def registros_por_arquivo(self, qtd_registros: int):        
         tam = len(self._dados_arquivo_original)
-        Logger.debug('Filtro de %s elementos selecionado' % qtd_registros)
+        Logger.debug('Contador de %s elementos selecionado' % qtd_registros)
         self._registros_por_arquivo = tam if (qtd_registros == -1) else int(qtd_registros)
     
 
@@ -118,7 +121,6 @@ class Singleton(QObject):
 
             valores_unicos = list(conj_valores)
             muitos_valores = '%d valores possíveis.' % len(valores_unicos)
-            valores_unicos.insert(0, '<Selecione>')
             self._valores_filtrados.extend(valores_unicos if len(valores_unicos) <= 100 else [muitos_valores])
             Logger.debug('%d valores encontrados para a coluna "%s".' % (len(valores_unicos), coluna))
         else:
@@ -143,7 +145,7 @@ class Singleton(QObject):
             for i in dados:
                 if i[filtro_coluna] != filtro_valor:
                     self._dados_arquivo_original.remove(i)
-            if len(self._dados_arquivo_original)==0:
+            if len(self._dados_arquivo_original) == 0:
                 # msg = 'Nenhum registro encontrado para o filtro especificado.\nO filtro será ignorado.'
                 self._dados_arquivo_original = dados[:]
                 # self.msg_filtro_ignorado.emit(msg)
@@ -153,9 +155,20 @@ class Singleton(QObject):
 
         Logger.debug('Filtro: %i registro(s) para {%s: %s}' % (len(self._dados_arquivo_original), filtro_coluna, filtro_valor))
 
+
     @pyqtProperty(bool)
     def filtro_ignorado(self):
         return self._filtro_ignorado
+
+
+    @pyqtProperty(int, notify=quantidade_registros_changed)
+    def quantidade_registros(self):
+        return len(self._dados_arquivo_original)
+
+
+    @pyqtSlot(name='cancelaOperacao')
+    def cancela_operacao(self):
+        Logger.debug('cancela_operacao() chamado.')
 
 
     def process_button_click(self):
@@ -166,6 +179,7 @@ class Singleton(QObject):
             mythread.start()
         else:
             self.show_popup('Verifique a URL do serviço de geocodificação.')
+
 
     def inicia_processamento(self):
         # colunas = self.recupera_labels()

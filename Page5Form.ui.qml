@@ -7,10 +7,12 @@ Page {
     id: page5
     width: 600
     height: 400
+    property int quantidadeRegistros: 0
 
     function onStart() {
         // Ultima tela antes de confirmar operação.
         next.text = qsTr("Concluir")
+        quantidadeRegistros = PySingleton.quantidade_registros
     }
 
     function onFinish() {
@@ -36,8 +38,24 @@ Page {
         id: dialog
         visible: false
         title: qsTr("Processando...")
+        standardButtons: StandardButton.Cancel
+
         Text {
-            text: qsTr("Atualizar contador de processamento.")
+            id: mensagem
+            text: qsTr("Atualizando contador de processamento: %1 de %2").arg(
+                      0).arg(quantidadeRegistros)
+        }
+
+        onButtonClicked: PySingleton.cancelaOperacao()
+    }
+
+    Connections {
+        target: PySingleton
+        onRegistrosProcessados: {
+            console.log('onRegistrosProcessados: ' + contagem)
+            dialog.mensagem.text = qsTr(
+                        "Atualizando contador de processamento: %1 de %2").arg(
+                        contagem).arg(quantidadeRegistros)
         }
     }
 }
