@@ -93,6 +93,7 @@ Page {
                     anchors.margins: 2
                     anchors.fill: parent
                     keyNavigationEnabled: true
+                    clip: true
                     model: []
 
                     Keys.onPressed: {
@@ -106,7 +107,7 @@ Page {
 
                     delegate: Text {
                         text: modelData
-                        width: parent.width-2
+                        width: parent.width - 2
                         height: 30
                         verticalAlignment: Text.AlignVCenter
                         padding: 2
@@ -132,12 +133,14 @@ Page {
                 Button {
                     text: qsTr('→')
                     id: addButton
+                    focusPolicy: "NoFocus"
                     onClicked: adicionaColuna()
                 }
 
                 Button {
                     text: qsTr('←')
                     id: removeButton
+                    focusPolicy: "NoFocus"
                     enabled: false
                     onClicked: removeColuna()
                 }
@@ -156,6 +159,7 @@ Page {
                     anchors.margins: 2
                     anchors.fill: parent
                     keyNavigationEnabled: true
+                    clip: true
                     model: []
 
                     Keys.onPressed: {
@@ -169,9 +173,11 @@ Page {
 
                     delegate: Text {
                         text: modelData
-                        width: parent.width
+                        width: parent.width - 2
                         height: 30
                         verticalAlignment: Text.AlignVCenter
+                        padding: 2
+
                         MouseArea {
                             anchors.fill: parent
                             onClicked: listview2.currentIndex = index
@@ -179,6 +185,7 @@ Page {
                         }
                     }
                     highlight: Rectangle {
+                        x: 1
                         color: "lightsteelblue"
                         radius: 2
                     }
