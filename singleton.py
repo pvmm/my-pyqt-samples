@@ -120,9 +120,11 @@ class Singleton(QObject):
             valores_unicos.insert(0, '<Selecione>')
             self._valores_filtrados.extend(valores_unicos if len(valores_unicos) <= 100 else [muitos_valores])
             Logger.debug('%d valores encontrados para a coluna "%s".' % (len(valores_unicos), coluna))
-            self.valores_filtrados_changed.emit(self._valores_filtrados)
         else:
-            Logger.warning('"%s": coluna não encontrada entre as colunas escolhidas.' % coluna)
+            self._valores_filtrados = []
+            Logger.debug('0 valor encontrados para a coluna "%s".' % coluna)
+
+        self.valores_filtrados_changed.emit(self._valores_filtrados)
 
 
     @pyqtProperty(list, notify=valores_filtrados_changed)

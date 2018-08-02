@@ -75,6 +75,7 @@ Page {
             Connections {
                 target: PySingleton
                 onValoresFiltradosChanged: {
+                    valores.unshift('<Selecione>')
                     console.log('onValoresFiltradosChanged: ' + valores.length)
                     comboBox_filtro_valor.model = valores
                 }
