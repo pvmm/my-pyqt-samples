@@ -96,9 +96,9 @@ class Singleton(QObject):
 
 
     @pyqtSlot(str, name='registrosPorArquivo')
-    def registros_por_arquivo(self, qtd_registros):        
+    def registros_por_arquivo(self, qtd_registros: int):        
         tam = len(self._dados_arquivo_original)
-        self._registros_por_arquivo = tam if (qtd_registros == 'Todos') else int(re.sub('[^0-9]', '', qtd_registros))
+        self._registros_por_arquivo = tam if (qtd_registros == -1) else qtd_registros
     
 
     @pyqtSlot(str, name='filtraColuna')
