@@ -98,8 +98,8 @@ class Singleton(QObject):
             Logger.error('"%s": arquivo não encontrado' % arquivo)
 
 
-    @pyqtSlot(str, name='registrosPorArquivo')
-    def registros_por_arquivo(self, qtd_registros: int):        
+    @pyqtSlot(str, name='defineQuantidadeRegistros')
+    def define_quantidade_registros(self, qtd_registros: int):        
         tam = len(self._dados_arquivo_original)
         Logger.debug('Contador de %s elementos selecionado' % qtd_registros)
         self._registros_por_arquivo = tam if (qtd_registros == -1) else int(qtd_registros)

@@ -20,7 +20,7 @@ Page {
     function onFinish() {
         var radio = [rpa_todos, rpa_10, rpa_100, rpa_mil, rpa_10_mil].filter(
                     isChecked).pop()
-        PySingleton.registrosPorArquivo(radio.value)
+        PySingleton.defineQuantidadeRegistros(radio.value)
     }
 
     Row {
