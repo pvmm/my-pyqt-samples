@@ -39,27 +39,11 @@ def main(gui, csvfile, dir):
             sys.excepthook = excepthook
             Logger.debug("Captura de erros ativada.")
 
-
-        # Create an instance of the application
         app = QGuiApplication(sys.argv)
-
-        # Register singleton python object
         qmlRegisterSingletonType(Singleton, "PySingletonModule", 1, 0, "PySingleton", Singleton.getInstance)
-
-        # Create QML engine
         engine = QQmlApplicationEngine()
-
-        # Load the qml file into the engine
         engine.load("main2.qml")
-
-        win = engine.rootObjects().pop()
-        Logger.debug("win = %s: %i, %s, %s." % (str(win), win.width(), win.title(), win.objectName()))
-        swipeView = win.findChild(QtQuick.QQuickItem, "view")
-        row = win.findChild(QtQuick.QQuickItem, "row")
-        #Logger.debug("children = %s." % win.children())
-        Logger.debug("swipeView = %s" % swipeView)
-        Logger.debug("row = %s" % row)
-        
+        # TODO: nicer clean up without core dumps.
         engine.quit.connect(app.quit)
         sys.exit(app.exec_())
 

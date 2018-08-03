@@ -212,12 +212,6 @@ class Singleton(QObject):
         self._thread_operacao.join()
 
 
-    #@pyqtSlot(name='terminaOperacao')
-    def termina_operacao(self, status, httpCode, mensagem):
-        """Deve ser chamado de dentro da thread."""
-        self.status_operacao_changed.emit(status, httpCode, mensagem)
-
-
     def atualiza_progresso(self, valor):
         if self._thread_operacao.stopped():
             return False
