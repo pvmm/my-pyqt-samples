@@ -148,28 +148,3 @@ def _identifica_diretorio(caminho_completo):
         return diretorio, arquivo
     except Exception as e:
         Logger.error('Erro ao manipular o diretório: %s' % e)
-
-def zip_files(nome_arquivo):
-    '''
-
-    '''
-    try:
-        arquivo = nome_arquivo.replace('.csv', '')
-        diretorio = diretorio_saida + 'files_' + arquivo + '/'
-        arquivo_zip = diretorio + arquivo + '.zip'
-
-        zip_file = zipfile.ZipFile(arquivo_zip, 'w')
-
-        for folder, subfolders, files in os.walk(diretorio):
-
-            for file in files:
-                if file.endswith('.csv'):
-                    zip_file.write(os.path.join(folder, file), os.path.relpath(os.path.join(folder,file), diretorio), compress_type = zipfile.ZIP_DEFLATED)
-
-        zip_file.close()
-
-        Logger.debug('prep_files: ' + nome_arquivo.replace('.csv', '.zip') + ' criado.')
-        return arquivo_zip
-
-    except Exception as e:
-        Logger.error('prep_files: Erro ao criar arquivo zip: %s' % e)

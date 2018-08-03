@@ -30,6 +30,7 @@ class Singleton(QObject):
     quantidade_registros_changed = pyqtSignal(int, name='quantidadeRegistrosChanged', arguments=['quantidade'])
     status_operacao_changed = pyqtSignal(int, int, str, name='statusOperacaoChanged', arguments=['status', 'httpCode', 'erro'])
     registro_processado = pyqtSignal(int, name='registroProcessado', arguments=['indice'])
+    str_arquivos_gerados = pyqtSignal(str, name='strArquivosGerados', arguments=['texto'])
 
     # msg_filtro_ignorado = pyqtSignal(str, name='msgFiltroIgnorado', arguments='msg')
 
@@ -255,7 +256,7 @@ class Singleton(QObject):
             self.status_operacao_changed.emit(INTERRUPTED, 0, '')
             return
 
-        self.lista_arquivos_gerados()
+        self.str_arquivos_gerados.emit(self.lista_arquivos_gerados())
 
         # Fecha pop up de progresso
         Logger.debug('status_operacao_changed: OK, 0, ""')
@@ -276,16 +277,11 @@ class Singleton(QObject):
                 for i in lista_arquivos_ordenada:
                     text_label += ('\n\t\t' + i)
 
-                ## Atualiza a textarea da última tela com os arquivos gerados
-                # App.get_running_app().root.screens[index_screen].ids.text_input_diretorio.text = text_label
             else:
                 text_label = 'Houve um problema ao acessar o diretório de saída. Verifique se novos arquivos foram gerados no diretório do arquivo csv original.'
-                ## Atualiza a textarea da última tela com os arquivos gerados
-                # App.get_running_app().root.screens[index_screen].ids.text_input_diretorio.text = text_label
         except Exception as e:
             Logger.error('%s' % e)
             raise e
             text_label = 'Verifique se novos arquivos foram gerados no diretório do arquivo csv original.'
-            ## Atualiza a textarea da última tela com os arquivos gerados
-            # App.get_running_app().root.screens[index_screen].ids.text_input_diretorio.text = text_label
-
+        Logger.debug(text_label)
+        return text_label

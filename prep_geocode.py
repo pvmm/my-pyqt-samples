@@ -7,6 +7,7 @@ from difflib import SequenceMatcher
 from operator import itemgetter
 from unicodedata import normalize
 import encodings.idna
+from logger import StdoutLogger as Logger
 
 
 OK, FAIL, INTERRUPTED = 0, -1, -2

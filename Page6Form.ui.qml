@@ -1,5 +1,6 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
+import PySingletonModule 1.0
 
 Page {
     id: page6
@@ -24,8 +25,18 @@ Page {
         y: 66
         width: parent.width * .9
         height: 210
-        text: qsTr("Text Area")
+        //text: qsTr("Text Area")
+        //text: PySingleton.str_arquivos_gerados
         readOnly: true
+        //onPressed: this.text = PySingleton.str_arquivos_gerados
+    }
+
+    Connections {
+        target: PySingleton
+        onStrArquivosGerados: {
+            console.log('onStrArquivosGerados: ' + texto)
+            textArea.text = texto
+        }
     }
 }
 
