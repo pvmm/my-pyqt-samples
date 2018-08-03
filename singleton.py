@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal, pyqtProperty
-import os, re, typing
+import os, re, typing, threading
 import prep_files, prep_geocode
 from logger import StdoutLogger as Logger
+
+from prep_geocode import OK, FAIL
 
 
 class Singleton(QObject):
     url_changed = pyqtSignal(str, name='urlChanged')
     valores_filtrados_changed = pyqtSignal(list, name='valoresFiltradosChanged', arguments=['valores'])
     quantidade_registros_changed = pyqtSignal(int, name='quantidadeRegistrosChanged', arguments=['quantidade'])
+    status_operacao_changed = pyqtSignal(int, int, str, name='statusOperacaoChanged', arguments=['status', 'httpCode', 'erro'])
     registro_processado = pyqtSignal(int, name='registroProcessado', arguments=['indice'])
 
     # msg_filtro_ignorado = pyqtSignal(str, name='msgFiltroIgnorado', arguments='msg')
@@ -101,8 +104,9 @@ class Singleton(QObject):
     @pyqtSlot(str, name='defineQuantidadeRegistros')
     def define_quantidade_registros(self, qtd_registros: int):        
         tam = len(self._dados_arquivo_original)
+        qtd_registros = int(qtd_registros)
         Logger.debug('Contador de %s elementos selecionado' % qtd_registros)
-        self._registros_por_arquivo = tam if (qtd_registros == -1) else int(qtd_registros)
+        self._registros_por_arquivo = tam if (qtd_registros == -1) else qtd_registros
     
 
     @pyqtSlot(str, name='filtraColuna')
@@ -171,19 +175,25 @@ class Singleton(QObject):
         Logger.debug('cancela_operacao() chamado.')
 
 
-    def process_button_click(self):
-        http_code = prep_geocode.testa_conexao(self._url)
-        if http_code == 200:
-            self.show_popup('Aguarde o fim do processamento...')
-            mythread = threading.Thread(target=self.inicia_processamento)
-            mythread.start()
-        else:
-            self.show_popup('Verifique a URL do serviço de geocodificação.')
+    @pyqtSlot(name='iniciaOperacao')
+    def inicia_operacao(self):
+        Logger.debug('inicia_operacao() chamado.')
+        mythread = threading.Thread(target=self._processa).start()
 
 
-    def inicia_processamento(self):
-        # colunas = self.recupera_labels()
-        colunas = colunas_selecionadas[:]
+    def _processa(self):
+        status, http_code, message = prep_geocode.testa_conexao(self._url)
+        Logger.debug('_processa: %i, %s, %s' % (status, http_code, message))
+        if status == OK and http_code != 200:
+            Logger.debug('status_operacao_changed: FAIL, %s, %s' % (http_code, message))
+            self.status_operacao_changed.emit(FAIL, http_code, message)
+            return
+        elif status == FAIL:
+            Logger.debug('status_operacao_changed: FAIL, 0, "%s"' % message)
+            self.status_operacao_changed.emit(FAIL, 0, message)
+            return
+
+        colunas = self._colunas_escolhidas[:]
         dados_preparados = prep_files.prepara_dados(self._dados_arquivo_original, colunas)
         dados_padronizados = prep_files.padroniza_dados(dados_preparados)
 
@@ -191,21 +201,22 @@ class Singleton(QObject):
 
         labels_arquivo_geocode = ['KEY', 'COLUNA_PESQ', 'DADO_COMPL_PESQ', 'DADO_PESQ', 'LOCAL_ENCONTRADO', 'SIMILARIDADE', 'LAT', 'LONG']
 
-        fatias = list( prep_geocode.fatia_lista(dados_padronizados, self._registros_por_arquivo) )
+        fatias = list(prep_geocode.fatia_lista(dados_padronizados, self._registros_por_arquivo))
         val = 0
+
         for v in fatias:
             val += 1
-
             dct_pesquisa = {'prioridade': colunas, 'dados': v, 'geocode_service': self._url}
             # lista_final = prep_geocode.gera_lista_final(dct_pesquisa)
             lista_final = self.gera_lista_final(dct_pesquisa)
 
-            prep_files.gera_arquivo(lista_final, 'geocode' + str(val), arquivo, labels_arquivo_geocode)
+            prep_files.gera_arquivo(lista_final, 'geocode' + str(val), self._arquivo, labels_arquivo_geocode)
 
         self.lista_arquivos_gerados()
 
-        ## Fecha pop up de progresso
-        # self.pop_up.dismiss()
+        # Fecha pop up de progresso
+        Logger.debug('status_operacao_changed: OK, 0, ""')
+        self.status_operacao_changed.emit(OK, 0, '')
 
 
     def gera_lista_final(self, dct_pesquisa):
@@ -238,8 +249,9 @@ class Singleton(QObject):
 
                 dados_finais.append(dct)
 
-                ## Atualiza contador do pop up de progresso
-                # self.pop_up.update_pop_up_text(str(ct) + ' de ' + str(total))
+                # Atualiza contador de progresso
+                Logger.debug('registro processado: %i' % ct)
+                self.registro_processado.emit(ct)
 
                 Logger.debug('main: {0} de {1}'.format(ct, total))
                 ct += 1
@@ -248,6 +260,7 @@ class Singleton(QObject):
         except Exception as e:
             Logger.error('main: Erro ao gerar lista final: %s' % e)
             raise e
+
 
     def lista_arquivos_gerados(self):
         try:
@@ -270,8 +283,9 @@ class Singleton(QObject):
                 ## Atualiza a textarea da última tela com os arquivos gerados
                 # App.get_running_app().root.screens[index_screen].ids.text_input_diretorio.text = text_label
         except Exception as e:
-            Logger.error('main: error %s' % e)
+            Logger.error('%s' % e)
             raise e
             text_label = 'Verifique se novos arquivos foram gerados no diretório do arquivo csv original.'
             ## Atualiza a textarea da última tela com os arquivos gerados
             # App.get_running_app().root.screens[index_screen].ids.text_input_diretorio.text = text_label
+

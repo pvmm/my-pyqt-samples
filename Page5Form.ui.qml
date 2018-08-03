@@ -16,7 +16,8 @@ Page {
     }
 
     function onFinish() {
-        dialog.visible = true
+        progressDialog.visible = true
+        PySingleton.iniciaOperacao()
     }
 
     header: Label {
@@ -35,7 +36,7 @@ Page {
     }
 
     Dialog {
-        id: dialog
+        id: progressDialog
         visible: false
         title: qsTr("Processando...")
         standardButtons: StandardButton.Cancel
@@ -51,11 +52,21 @@ Page {
 
     Connections {
         target: PySingleton
-        onRegistrosProcessados: {
-            console.log('onRegistrosProcessados: ' + contagem)
-            dialog.mensagem.text = qsTr(
+        onRegistroProcessado: {
+            console.log('onRegistroProcessado: ' + indice)
+            mensagem.text = qsTr(
                         "Atualizando contador de processamento: %1 de %2").arg(
-                        contagem).arg(quantidadeRegistros)
+                        indice).arg(quantidadeRegistros)
+        }
+        onStatusOperacaoChanged: {
+            console.log('onStatusOperacaoChanged: ' + status)
+
+            if (status == 0) {
+                progressDialog.standardButtons = StandardButton.OK
+            } else {
+                progressDialog.standardButtons = StandardButton.OK
+                mensagem.text = erro
+            }
         }
     }
 }

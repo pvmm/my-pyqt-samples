@@ -8,6 +8,10 @@ from operator import itemgetter
 from unicodedata import normalize
 import encodings.idna
 
+
+OK, FAIL = 0, -1
+
+
 # Envia mensagem de log para saída padrão.
 if 'DEBUG' in os.environ:
     from logger import StdoutLogger as Logger
@@ -123,9 +127,10 @@ def testa_conexao(geocode_service):
         parametros = urllib.parse.urlencode({'localidade': '', 'limite': '1'})
         result = urllib.request.urlopen(consulta.format(parametros))
         http_code = result.code
-        return http_code
+        return OK, http_code, result.read()
     except Exception as e:
         Logger.error('prep_geocode: Erro ao consultar API de geocodificação: %s' % e)
+        return FAIL, 0, '%s' % e
 
 
 def _avalia_resultado(dado_busca, str_json):
@@ -182,3 +187,4 @@ def fatia_lista(lista, n):
     '''
     for i in range(0, len(lista), n):
         yield lista[i:i + n]
+
