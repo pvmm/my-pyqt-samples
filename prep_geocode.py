@@ -117,12 +117,14 @@ def _consulta_api(local, geocode_service):
     try:
         # consulta = 'http://geocode.codeplan.df.gov.br/?{0}'
         consulta = geocode_service + '/?{0}' if geocode_service[-1] != '/' else geocode_service + '?{0}'
-        Logger.debug('prep_geocode: ' + consulta)
         parametros = urllib.parse.urlencode({'localidade': local, 'limite': '33'})
-        result = urllib.request.urlopen(consulta.format(parametros))
+        url = consulta.format(parametros)
+        Logger.debug('prep_geocode: %s' % url)
+        result = urllib.request.urlopen(url)
         result_set = result.read()
         str_json = result_set.decode('utf-8')
         return str_json
+
     except Exception as e:
         Logger.error('prep_geocode: Erro ao consultar API de geocodificação: %s' % e)
 
