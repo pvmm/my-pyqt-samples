@@ -25,15 +25,12 @@ Page {
         y: 66
         width: parent.width * .9
         height: 210
-        //text: qsTr("Text Area")
-        //text: PySingleton.str_arquivos_gerados
         readOnly: true
-        //onPressed: this.text = PySingleton.str_arquivos_gerados
     }
 
     Connections {
         target: PySingleton
-        onStrArquivosGerados: {
+        onArquivosGerados: {
             console.log('onStrArquivosGerados: ' + texto)
             textArea.text = texto
         }

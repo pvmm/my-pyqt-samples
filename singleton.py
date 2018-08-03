@@ -30,7 +30,7 @@ class Singleton(QObject):
     quantidade_registros_changed = pyqtSignal(int, name='quantidadeRegistrosChanged', arguments=['quantidade'])
     status_operacao_changed = pyqtSignal(int, int, str, name='statusOperacaoChanged', arguments=['status', 'httpCode', 'erro'])
     registro_processado = pyqtSignal(int, name='registroProcessado', arguments=['indice'])
-    str_arquivos_gerados = pyqtSignal(str, name='strArquivosGerados', arguments=['texto'])
+    arquivos_gerados = pyqtSignal(str, name='arquivosGerados', arguments=['texto'])
 
     # msg_filtro_ignorado = pyqtSignal(str, name='msgFiltroIgnorado', arguments='msg')
 
@@ -257,7 +257,7 @@ class Singleton(QObject):
             self.status_operacao_changed.emit(INTERRUPTED, 0, '')
             return
 
-        self.str_arquivos_gerados.emit(self.lista_arquivos_gerados())
+        self.arquivos_gerados.emit(self.lista_arquivos_gerados())
 
         # Fecha pop up de progresso
         Logger.debug('status_operacao_changed: OK, 0, ""')
