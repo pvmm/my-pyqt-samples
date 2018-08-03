@@ -9,32 +9,32 @@ from unicodedata import normalize
 import encodings.idna
 
 
-OK, FAIL = 0, -1
+OK, FAIL, INTERRUPTED = 0, -1, -2
+
+
+class ThreadInterrompidaError(Exception):
+    pass
 
 
 # Envia mensagem de log para saída padrão.
 if 'DEBUG' in os.environ:
     from logger import StdoutLogger as Logger
 
-def gera_lista_final(dct_pesquisa):
+def gera_lista_final(dct_pesquisa, atualiza_progresso):
     '''
-    Recebe dicionário com dados do arquivo csv (lista de dicionários com a chave e com as colunas a serem geocodificadas) e lista de colunas na ordem que deve ser feita a geocodificação.
-    Monta a lista final que será gravada em novo arquivo csv aplicando a função _consulta_geocode para cada registro.
+    Recebe dicionário com dados do arquivo csv (lista de dicionários com a chave e com as colunas a serem geocodificadas) e lista de colunas na ordem em que deve ser feita a geocodificação. Monta a lista final que será gravada em novo arquivo csv aplicando a função _consulta_geocode para cada registro.
     '''
     try:
         dados = dct_pesquisa['dados']
         colunas = dct_pesquisa['prioridade']
         geocode_service = dct_pesquisa['geocode_service']
-
         dados_finais = []
         total = len(dados)
         ct = 1
 
         for d in dados:
-
             lb_key = 'KEY'
             key = d[lb_key]
-
             dct = {lb_key: key}
 
             for c in colunas:
@@ -46,12 +46,21 @@ def gera_lista_final(dct_pesquisa):
 
             dados_finais.append(dct)
 
-            Logger.debug('prep_geocode: {0} de {1}'.format(ct, total))
-            ct += 1
+            # Atualiza contador de progresso
+            if not atualiza_progresso(ct):
+                raise ThreadInterrompidaError()
+            else:
+                Logger.debug('prep_geocode: {0} de {1}'.format(ct, total))
+                ct += 1
 
         return dados_finais
+
+    except ThreadInterrompidaError as e:
+        Logger.error('prep_geocode: interrupção por usuário foi detectada: %s' % e)
+        raise e
+
     except Exception as e:
-        Logger.error('prep_code: Erro ao gerar lista final: %s' % e)
+        Logger.error('prep_geocode: Erro ao gerar lista final: %s' % e)
 
 
 def _consulta_geocode(string_pesquisa, coluna, geocode_service):

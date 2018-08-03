@@ -4,7 +4,24 @@ import os, re, typing, threading
 import prep_files, prep_geocode
 from logger import StdoutLogger as Logger
 
-from prep_geocode import OK, FAIL
+from prep_geocode import OK, FAIL, INTERRUPTED, ThreadInterrompidaError
+
+
+class ThreadCancelavel(threading.Thread):
+    """Classe Thread com um método stop(). A thread precisa checar ela mesma regularmente pela condição de parada."""
+
+    def __init__(self, *args, **kwargs):
+        super(ThreadCancelavel, self).__init__(*args, **kwargs)
+        self._stop_event = threading.Event()
+
+
+    def stop(self):
+        self._stop_event.set()
+
+
+    def stopped(self):
+        return self._stop_event.is_set()
+
 
 
 class Singleton(QObject):
@@ -30,8 +47,10 @@ class Singleton(QObject):
     # Página 3
     _coluna_filtrada = ''
     _valores_filtrados = []
-
     _filtro_ignorado = False
+
+    # Página 5
+    _thread_operacao = None
 
 
     def __init__(self, parent = None):
@@ -170,20 +189,47 @@ class Singleton(QObject):
         return len(self._dados_arquivo_original)
 
 
-    @pyqtSlot(name='cancelaOperacao')
-    def cancela_operacao(self):
-        Logger.debug('cancela_operacao() chamado.')
-
-
     @pyqtSlot(name='iniciaOperacao')
     def inicia_operacao(self):
+        """Deve ser chamado de fora de thread."""
         Logger.debug('inicia_operacao() chamado.')
-        mythread = threading.Thread(target=self._processa).start()
+        self.status_operacao_changed.connect(self.operacao_terminada)
+        self._thread_operacao = ThreadCancelavel(target=self._processa)
+        self._thread_operacao.start()
+
+
+    @pyqtSlot(name='cancelaOperacao')
+    def cancela_operacao(self):
+        """Deve ser chamado de fora de thread."""
+        Logger.debug('cancela_operacao() chamado.')
+        self._thread_operacao.stop()
+        self._thread_operacao.join()
+
+
+    def operacao_terminada(self, status, http_code, mensagem):
+        """Faz limpeza de thread depois que ela termina."""
+        Logger.debug('operacao_terminada: %i, %s, "%s"' % (status, http_code, mensagem))
+        self._thread_operacao.join()
+
+
+    #@pyqtSlot(name='terminaOperacao')
+    def termina_operacao(self, status, httpCode, mensagem):
+        """Deve ser chamado de dentro da thread."""
+        self.status_operacao_changed.emit(status, httpCode, mensagem)
+
+
+    def atualiza_progresso(self, valor):
+        if self._thread_operacao.stopped():
+            return False
+        else:
+            self.registro_processado.emit(valor)
+            return True
 
 
     def _processa(self):
         status, http_code, message = prep_geocode.testa_conexao(self._url)
         Logger.debug('_processa: %i, %s, %s' % (status, http_code, message))
+
         if status == OK and http_code != 200:
             Logger.debug('status_operacao_changed: FAIL, %s, %s' % (http_code, message))
             self.status_operacao_changed.emit(FAIL, http_code, message)
@@ -204,62 +250,22 @@ class Singleton(QObject):
         fatias = list(prep_geocode.fatia_lista(dados_padronizados, self._registros_por_arquivo))
         val = 0
 
-        for v in fatias:
-            val += 1
-            dct_pesquisa = {'prioridade': colunas, 'dados': v, 'geocode_service': self._url}
-            # lista_final = prep_geocode.gera_lista_final(dct_pesquisa)
-            lista_final = self.gera_lista_final(dct_pesquisa)
-
-            prep_files.gera_arquivo(lista_final, 'geocode' + str(val), self._arquivo, labels_arquivo_geocode)
+        try:
+            for v in fatias:
+                val += 1
+                dct_pesquisa = {'prioridade': colunas, 'dados': v, 'geocode_service': self._url}
+                lista_final = prep_geocode.gera_lista_final(dct_pesquisa, self.atualiza_progresso)
+                prep_files.gera_arquivo(lista_final, 'geocode' + str(val), self._arquivo, labels_arquivo_geocode)
+        except ThreadInterrompidaError:
+            Logger.debug('** interrompido pelo usuário')
+            self.status_operacao_changed.emit(INTERRUPTED, 0, '')
+            return
 
         self.lista_arquivos_gerados()
 
         # Fecha pop up de progresso
         Logger.debug('status_operacao_changed: OK, 0, ""')
         self.status_operacao_changed.emit(OK, 0, '')
-
-
-    def gera_lista_final(self, dct_pesquisa):
-        '''
-        Recebe dicionário com dados do arquivo csv (lista de dicionários com a chave e com as colunas a serem geocodificadas) e lista de colunas na ordem que deve ser feita a geocodificação.
-        Monta a lista final que será gravada em novo arquivo csv aplicando a função _consulta_geocode para cada registro.
-        '''
-        try:
-            dados = dct_pesquisa['dados']
-            colunas = dct_pesquisa['prioridade']
-            geocode_service = dct_pesquisa['geocode_service']
-
-            dados_finais = []
-            total = len(dados)
-            ct = 1
-
-            for d in dados:
-
-                lb_key = 'KEY'
-                key = d[lb_key]
-
-                dct = {lb_key: key}
-
-                for c in colunas:
-                    if c in list(d.keys()):
-                        result_set = prep_geocode._consulta_geocode(d[c], c, geocode_service)
-                        dct.update(result_set)
-                        if dct['SIMILARIDADE']!=0.0:
-                            break
-
-                dados_finais.append(dct)
-
-                # Atualiza contador de progresso
-                Logger.debug('registro processado: %i' % ct)
-                self.registro_processado.emit(ct)
-
-                Logger.debug('main: {0} de {1}'.format(ct, total))
-                ct += 1
-
-            return dados_finais
-        except Exception as e:
-            Logger.error('main: Erro ao gerar lista final: %s' % e)
-            raise e
 
 
     def lista_arquivos_gerados(self):

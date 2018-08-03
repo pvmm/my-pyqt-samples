@@ -43,8 +43,6 @@ Page {
         title: "Selecione um arquivo .csv"
         folder: PySingleton.path
         nameFilters: [qsTr("Arquivos csv (*.csv)")]
-
-        //Component.onCompleted: visible = false
         visible: false
 
         onAccepted: {

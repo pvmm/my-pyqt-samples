@@ -43,7 +43,8 @@ Page {
 
         Text {
             id: mensagem
-            text: qsTr("Atualizando contador de processamento: %1 de %2").arg(
+            horizontalAlignment: Text.AlignHCenter
+            text: qsTr("Atualizando contador de processamento:\n%1 de %2").arg(
                       0).arg(quantidadeRegistros)
         }
 
@@ -55,23 +56,18 @@ Page {
         onRegistroProcessado: {
             console.log('onRegistroProcessado: ' + indice)
             mensagem.text = qsTr(
-                        "Atualizando contador de processamento: %1 de %2").arg(
+                        "Atualizando contador de processamento:\n%1 de %2").arg(
                         indice).arg(quantidadeRegistros)
         }
         onStatusOperacaoChanged: {
             console.log('onStatusOperacaoChanged: ' + status)
+            progressDialog.standardButtons = StandardButton.Ok
 
             if (status == 0) {
-                progressDialog.standardButtons = StandardButton.OK
+                progressDialog.close()
             } else {
-                progressDialog.standardButtons = StandardButton.OK
-                mensagem.text = erro
+                mensagem.text = qsTr("erro recebido: " + erro)
             }
         }
     }
 }
-
-/*##^## Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
- ##^##*/
