@@ -16,6 +16,7 @@ Page {
     }
 
     function onFinish() {
+        PySingleton.url = textField.text
         progressDialog.visible = true
         PySingleton.iniciaOperacao()
     }
@@ -38,12 +39,14 @@ Page {
     Dialog {
         id: progressDialog
         visible: false
+        width: 500
         title: qsTr("Processando...")
         standardButtons: StandardButton.Cancel
 
         Text {
             id: mensagem
             horizontalAlignment: Text.AlignHCenter
+            anchors.fill: parent
             text: qsTr("Atualizando contador de processamento:\n%1 de %2").arg(
                       0).arg(quantidadeRegistros)
         }
@@ -66,7 +69,7 @@ Page {
             if (status == 0) {
                 progressDialog.close()
             } else {
-                mensagem.text = qsTr("erro recebido: " + erro)
+                mensagem.text = qsTr("erro recebido:") + "\n" + erro
             }
         }
     }

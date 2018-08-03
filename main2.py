@@ -43,9 +43,12 @@ def main(gui, csvfile, dir):
         qmlRegisterSingletonType(Singleton, "PySingletonModule", 1, 0, "PySingleton", Singleton.getInstance)
         engine = QQmlApplicationEngine()
         engine.load("main2.qml")
-        # TODO: nicer clean up without core dumps.
         engine.quit.connect(app.quit)
-        sys.exit(app.exec_())
+        rc = app.exec_()
+        Logger.debug('** terminando com %s' % rc)
+        del app
+        del engine
+        #sys.exit(rc)
 
     else:
         Logger.debug('iniciando em modo texto.')

@@ -25,7 +25,7 @@ class ThreadCancelavel(threading.Thread):
 
 
 class Singleton(QObject):
-    url_changed = pyqtSignal(str, name='urlChanged')
+    url_changed = pyqtSignal(str, name='urlChanged', arguments=['url'])
     valores_filtrados_changed = pyqtSignal(list, name='valoresFiltradosChanged', arguments=['valores'])
     quantidade_registros_changed = pyqtSignal(int, name='quantidadeRegistrosChanged', arguments=['quantidade'])
     status_operacao_changed = pyqtSignal(int, int, str, name='statusOperacaoChanged', arguments=['status', 'httpCode', 'erro'])
@@ -52,6 +52,7 @@ class Singleton(QObject):
 
     # Página 5
     _thread_operacao = None
+    thread_finished = pyqtSignal(name='threadFinished')
 
 
     def __init__(self, parent = None):
@@ -95,7 +96,7 @@ class Singleton(QObject):
     def url(self, url):
         if self._url != url:
             self._url = url
-            self.url_changed.emit()
+            self.url_changed.emit(url)
 
 
     @pyqtSlot(str, name='adicionaColuna')

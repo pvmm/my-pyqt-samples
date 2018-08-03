@@ -116,7 +116,6 @@ def _consulta_api(local, geocode_service):
     Recebe a descrição de um local e faz a pesquisa do mesmo na API de geocodificação
     '''
     try:
-        # consulta = 'http://geocode.codeplan.df.gov.br/?{0}'
         consulta = geocode_service + '/?{0}' if geocode_service[-1] != '/' else geocode_service + '?{0}'
         parametros = urllib.parse.urlencode({'localidade': local, 'limite': '33'})
         url = consulta.format(parametros)
