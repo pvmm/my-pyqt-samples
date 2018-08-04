@@ -32,8 +32,6 @@ class Singleton(QObject):
     registro_processado = pyqtSignal(int, name='registroProcessado', arguments=['indice'])
     arquivos_gerados = pyqtSignal(str, name='arquivosGerados', arguments=['texto'])
 
-    # msg_filtro_ignorado = pyqtSignal(str, name='msgFiltroIgnorado', arguments='msg')
-
     __instance = None
     _path = os.path.expanduser('~') if 'RELEASE' in os.environ else os.path.join(os.path.dirname(os.path.realpath(__file__)), 'exemplo')
     _colunas_disponiveis = []
@@ -163,20 +161,22 @@ class Singleton(QObject):
     
     @pyqtSlot(str, str, name='filtraDados')
     def filtra_dados(self, filtro_coluna, filtro_valor):
-        # if (filtro_coluna != '<Selecione>' and filtro_valor != '<Selecione>'):
-        if (filtro_coluna in self.colunas_disponiveis and filtro_valor != '<Selecione>'):
-            # Logger.debug("%s, %s" % (filtro_coluna, filtro_valor))
+        Logger.debug("%s, %s" % (filtro_coluna, filtro_valor))
+
+        if filtro_coluna in self.colunas_disponiveis:
             dados = self._dados_arquivo_original[:]
-            for i in dados:
-                if i[filtro_coluna] != filtro_valor:
-                    self._dados_arquivo_original.remove(i)
+
+            for linha in dados:
+                if linha[filtro_coluna] != filtro_valor:
+                    self._dados_arquivo_original.remove(linha)
+
             if len(self._dados_arquivo_original) == 0:
-                # msg = 'Nenhum registro encontrado para o filtro especificado.\nO filtro será ignorado.'
                 self._dados_arquivo_original = dados[:]
-                # self.msg_filtro_ignorado.emit(msg)
                 self._filtro_ignorado = True
             else:
                 self._filtro_ignorado = False
+        else:
+            self._filtro_ignorado = False
 
         Logger.debug('Filtro: %i registro(s) para {%s: %s}' % (len(self._dados_arquivo_original), filtro_coluna, filtro_valor))
 

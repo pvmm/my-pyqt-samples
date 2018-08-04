@@ -47,6 +47,26 @@ ApplicationWindow {
 
         Page6Form {
         }
+
+        function paginaAnterior() {
+            next.enabled = true;
+            view.currentIndex = Math.max(view.currentIndex - 1, 0);
+
+            if (typeof view.currentItem.onStart === "function") {
+                view.currentItem.onStart()
+            }
+        }
+
+        function paginaProxima() {
+            previous.enabled = true;
+            view.currentIndex = view.currentIndex + 1;
+
+            if (view.currentIndex == view.count) {
+                Qt.exit(0)
+            } else if (typeof view.currentItem.onStart === "function") {
+                view.currentItem.onStart()
+            }
+        }
     }
 
     footer: Row {
@@ -59,37 +79,21 @@ ApplicationWindow {
             text: qsTr("Voltar")
             width: parent.width / 2
             enabled: false
-
-            onClicked: {
-                next.enabled = true;
-                view.currentIndex = Math.max(view.currentIndex - 1, 0);
-
-                if (typeof view.currentItem.onStart === "function") {
-                    view.currentItem.onStart()
-                }
-            }
+            onClicked: view.paginaAnterior()
         }
         Button {
             id: next
             text: qsTr("Avançar")
             width: parent.width / 2
             enabled: false
-
             onClicked: {
                 // Se onFinish() existir e retornar false, cancela o avanço de tela.
                 if (typeof view.currentItem.onFinish === "function") {
-                    if (view.currentItem.onFinish() === false) {
-                        return
+                    if (view.currentItem.onFinish() !== false) {
+                        view.paginaProxima()
                     }
-                }
-
-                previous.enabled = true;
-                view.currentIndex = view.currentIndex + 1;
-
-                if (view.currentIndex == view.count) {
-                    Qt.exit(0)
-                } else if (typeof view.currentItem.onStart === "function") {
-                    view.currentItem.onStart()
+                } else {
+                    view.paginaProxima()
                 }
             }
         }

@@ -32,8 +32,8 @@ def main(gui, csvfile, dir):
 
             def excepthook(exctype, value, tb):
                 print('** Error Information **')
-                print('Type:', exctype)
-                print('Message:', value)
+                print('Type: %s' % exctype)
+                print('Message: %s' % value)
                 traceback.print_tb(tb)
                 exit()
             sys.excepthook = excepthook
@@ -48,6 +48,7 @@ def main(gui, csvfile, dir):
         Logger.debug('** terminando com %s' % rc)
         del app
         del engine
+        exit()
         #sys.exit(rc)
 
     else:

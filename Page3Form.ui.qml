@@ -19,23 +19,29 @@ Page {
         var combobox_coluna = PySingleton.colunas_disponiveis
         combobox_coluna.unshift('<Selecione>')
         comboBox_filtro_coluna.model = combobox_coluna
-        //console.log(PySingleton.preenche_combobox_coluna())
     }
 
     function onFinish() {
         PySingleton.filtraDados(comboBox_filtro_coluna.currentText,
                                 comboBox_filtro_valor.currentText)
-        if (PySingleton.filtro_ignorado)
+        if (PySingleton.filtro_ignorado) {
             dialog.visible = true
+            return false
+        } else {
+            return true
+        }
     }
 
     Dialog {
         id: dialog
         visible: false
         title: qsTr("Filtro")
+
         Text {
             text: qsTr("Nenhum registro encontrado para o filtro especificado.\nO filtro será ignorado.")
         }
+
+        onButtonClicked: view.paginaProxima()
     }
 
     Grid {
