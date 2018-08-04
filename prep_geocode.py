@@ -21,9 +21,9 @@ class ThreadInterrompidaError(Exception):
 if 'DEBUG' in os.environ:
     from logger import StdoutLogger as Logger
 
-def gera_lista_final(dct_pesquisa, atualiza_progresso):
+def gera_lista_final(dct_pesquisa, atualiza_progresso=lambda: True):
     '''
-    Recebe dicionário com dados do arquivo csv (lista de dicionários com a chave e com as colunas a serem geocodificadas) e lista de colunas na ordem em que deve ser feita a geocodificação. Monta a lista final que será gravada em novo arquivo csv aplicando a função _consulta_geocode para cada registro.
+    Recebe dicionário com dados do arquivo CSV (lista de dicionários com a chave e com as colunas a serem geocodificadas) e lista de colunas na ordem em que deve ser feita a geocodificação. Monta a lista final que será gravada em novo arquivo csv aplicando a função _consulta_geocode para cada registro.
     '''
     try:
         dados = dct_pesquisa['dados']
