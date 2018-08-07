@@ -1,34 +1,68 @@
 # -*- coding: utf-8 -*-
+from logger import StdoutLogger as Logger
 
-import sys
-from PyQt5.QtWidgets import QWidget, QMessageBox, QApplication
+# Carregar ambiente virtual
+import sys, os, platform
 
-class Example(QWidget):
-    
-    def __init__(self):
-        super().__init__()
-        self.initUI()
-        
-        
-    def initUI(self):               
-        self.setGeometry(300, 300, 250, 150)        
-        self.setWindowTitle('Message box')    
-        self.show()
-        
-        
-    def closeEvent(self, event):
-        
-        reply = QMessageBox.question(self, 'Message',
-            "Are you sure to quit?", QMessageBox.Yes | 
-            QMessageBox.No, QMessageBox.No)
+if platform.system() == 'Windows':
+    virtualenv_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'env/Scripts/activate_this.py')
+else:
+    virtualenv_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'env/bin/activate_this.py')
 
-        if reply == QMessageBox.Yes:
-            event.accept()
-        else:
-            event.ignore()        
-        
-        
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ex = Example()
-    sys.exit(app.exec_())
+if os.path.exists(virtualenv_file):
+    with open(virtualenv_file) as file_:
+        exec(file_.read(), dict(__file__ = virtualenv_file))
+        Logger.debug("Virtualenv ativado.")
+
+
+import click
+@click.command(name = 'geocode-csv')
+@click.option('--gui', is_flag=True, default=True, help = 'Executa geocode-csv em modo gráfico.')
+@click.option('--csvfile', default='AMOSTRA.csv', help = 'Arquivo .CSV de entrada.')
+@click.option('--dir', default='files_AMOSTRA', help = 'Diretório de saída.')
+def main(gui, csvfile, dir):
+    from singleton import Singleton
+
+    if gui:
+        os.environ['QT_QUICK_CONTROLS_STYLE']='Universal'
+
+        # Define função de captura de erro para capturar erros com QML.
+        if 'RELEASE' not in os.environ:
+            import traceback
+
+            def excepthook(exctype, value, tb):
+                print('** Error Information **')
+                print('Type: %s' % exctype)
+                print('Message: %s' % value)
+                traceback.print_tb(tb)
+                exit()
+            sys.excepthook = excepthook
+            Logger.debug("Captura de erros ativada.")
+
+        app = QGuiApplication(sys.argv)
+        qmlRegisterSingletonType(Singleton, "PySingletonModule", 1, 0, "PySingleton", Singleton.getInstance)
+        engine = QQmlApplicationEngine()
+        engine.load("main.qml")
+        engine.quit.connect(app.quit)
+        rc = app.exec_()
+        Logger.debug('** terminando com %s' % rc)
+        del app
+        del engine
+        exit()
+        #sys.exit(rc)
+
+    else:
+        Logger.debug('iniciando em modo texto.')
+        singleton.abre_arquivo(csvfile)
+
+
+if __name__ == "__main__":
+    # Carrega PyQt5
+    from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty
+    from PyQt5 import QtQuick
+    from PyQt5.QtGui import QGuiApplication
+    from PyQt5.QtQml import QQmlApplicationEngine, qmlRegisterSingletonType
+    Logger.debug("Bibliotecas do PyQt5 carregadas.")
+
+    main()
+
