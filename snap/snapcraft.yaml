@@ -1,0 +1,21 @@
+name: geocode-csv 
+version: 1.0
+summary: GEOCODE CSV
+description: |
+  GEOCODE CSV fornece serviço de geolocalização a listas de endereços.
+
+grade: devel
+confinement: devmode
+
+apps:
+  geocode-csv:
+    command: geocode
+
+parts:
+  setup:
+    plugin: python
+    python-version: python3
+    python-packages: [pyqt5, click]
+  geocode-csv:
+    plugin: python
+    python-version: python3
