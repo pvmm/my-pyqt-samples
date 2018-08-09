@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from logger import StdoutLogger as Logger
 
@@ -57,7 +57,6 @@ def main(gui, csvfile, dir):
 if __name__ == "__main__":
     # Carrega PyQt5
     from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty
-    from PyQt5 import QtQuick
     from PyQt5.QtGui import QGuiApplication
     from PyQt5.QtQml import QQmlApplicationEngine, qmlRegisterSingletonType
     Logger.debug("Bibliotecas do PyQt5 carregadas.")

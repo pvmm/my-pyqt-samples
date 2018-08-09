@@ -9,14 +9,24 @@ confinement: devmode
 
 apps:
   geocode-csv:
-    command: geocode
+    command: geocode-csv
 
 parts:
   geocode-csv:
-    plugin: python3
+    plugin: python
+    python-version: python3
     source: https://github.com/pvmm/my-pyqt-samples
     source-type: git
     stage-packages:
       - python3-pyqt5
+      - python3-pyqt5.qtquick
+      - python3-click
       - libc-bin
       - locales
+      - libdb5.3
+
+  geocode-csv-copy:
+    plugin: dump
+    source: .
+    organize:
+      geocode-csv-wrapper: bin/geocode-csv-wrapper
