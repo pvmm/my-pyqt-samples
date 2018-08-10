@@ -15,15 +15,33 @@ parts:
   geocode-csv:
     plugin: python
     python-version: python3
+    after: [desktop-qt5]
     source: https://github.com/pvmm/my-pyqt-samples
     source-type: git
     stage-packages:
       - python3-pyqt5
       - python3-pyqt5.qtquick
       - python3-click
+      - libqt5gui5
+      - libxau6
+      - libxdmcp6
+      - libbsd0
+      - libstdc++6
+      - libc6
+      - zlib1g
       - libc-bin
+      - libglib2.0-0
+      - libuuid1
+      - libpcre3
+      - libsystemd0
+      - liblzma5
+      - liblz4-1
+      - libgcrypt20
+      - libgpg-error0
       - locales
       - libdb5.3
+      - libselinux1
+      - libgcc1
 
   geocode-csv-copy:
     plugin: dump
